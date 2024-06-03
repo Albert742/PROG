@@ -1,0 +1,34 @@
+{
+	"folders": [
+		{
+			"name": "C C++",
+			"path": "C C++"
+		},
+		{
+			"name": "Python",
+			"path": "Python"
+		},
+		{
+			"name": "Java",
+			"path": "Java"
+		},
+		{
+			"name": "Shell",
+			"path": "Shell"
+		},
+		{
+			"path": "Spring"
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"stdbool.h": "c",
+			"stdio.h": "c"
+		},
+		"cSpell.words": [
+			"Totti"
+		],
+		"java.compile.nullAnalysis.mode": "automatic",
+		"java.configuration.updateBuildConfiguration": "automatic"
+	}
+}

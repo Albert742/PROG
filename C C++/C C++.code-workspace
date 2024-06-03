@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"name": "C C++",
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"stdbool.h": "c",
+			"stdio.h": "c"
+		}
+	}
+}
