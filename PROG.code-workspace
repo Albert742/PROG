@@ -18,6 +18,9 @@
 		},
 		{
 			"path": "Spring"
+		},
+		{
+			"path": "SQL"
 		}
 	],
 	"settings": {
