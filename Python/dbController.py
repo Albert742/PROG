@@ -201,7 +201,9 @@ def add_Attivita_Fisica(conn, Durata, Caloria, Data, PazienteID, EserciziID):
 
 def populateSQL():
     conn = connessione()
-    add_Paziente(conn, '01/01/2000', 'M')
+    id_paziente = add_Paziente(conn, '01/02/1995', 'F')
+    id_esercizio = add_Esercizi(conn, '3', 'peso', 'gerarchico', 'ganci', 'palestra', False)
+    add_Attivita_Fisica(conn, 75, 150, '22/06/2024', id_paziente, id_esercizio)
     disconnesione(conn)
 
 

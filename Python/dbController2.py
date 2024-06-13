@@ -204,7 +204,9 @@ def add_Gestione_Ordini(conn, date_booking, date_checkin, date_checkout, payment
 def populateSQL():
     
     conn = connessione()
-    add_Clienti(conn, 'John', 'Doe', 'jdoe@me.com', '1234567890', '123 Main St')
+    #add_Clienti(conn, 'John', 'Doe', 'jdoe@me.com', '1234567890', '123 Main St')
+    add_Stanze(conn, 'Single', 100.00, '101')
+    add_Gestione_Ordini(conn, '2020-01-01', '2020-01-02', '2020-01-03', 'Credit Card', 1, 1)
     disconnesione(conn)
     
 
