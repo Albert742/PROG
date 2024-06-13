@@ -32,9 +32,8 @@ def connessione(check=False):
 
 
 def disconnesione(conn):
-    """
-    Deconnects to the Ismett database.
-	"""
+
+    # Chiusura della connessione
 
     cursore, db = conn
     cursore.close()
@@ -174,7 +173,7 @@ def add_esercizi(conn, mywellness_id, exercise_name, exercise_type, equipment_na
     return query4db(conn, sql, args=args, commit=True)
 
 
-def add_Attivita_Fisica(conn, Durata, Caloria, Data, Trial, Trial_Giorno, PazienteID, EserciziID):
+def add_Attivita_Fisica(conn, Durata, Caloria, Data, PazienteID, EserciziID):
     sql = """INSERT INTO `ISMETT_PRENCD`.`Physical_Activity`(
                                         `duration`,
 										`calories`,
@@ -193,7 +192,7 @@ def add_Attivita_Fisica(conn, Durata, Caloria, Data, Trial, Trial_Giorno, Pazien
 
 		"""
 
-    args = (Durata, Caloria, Data, Trial, Trial_Giorno, PazienteID, EserciziID, )
+    args = (Durata, Caloria, Data, PazienteID, EserciziID, )
 
     return query4db(conn, sql, args=args, commit=True)
 
