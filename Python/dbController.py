@@ -127,7 +127,7 @@ def createSQL():
 
 ###############################################################################################################################
 
-def add_patient(conn, demetrixCode, data_arruolamento, data_Nascita, genere):
+def add_patient(conn, data_Nascita, genere):
     sql = """INSERT INTO `lezione`.`Patient`(
 										`date_of_birth`,
 										`gender`
