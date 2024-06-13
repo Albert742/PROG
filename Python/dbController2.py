@@ -129,7 +129,7 @@ def createSQL():
 ###############################################################################################################################
 
 def add_Clienti(conn, firstname, lastname, email, phone, address):
-    sql = """INSERT INTO `ISMETT_PRENCD`.`Clients`(
+    sql = """INSERT INTO `test`.`Clients`(
 										`firstname`,
 										`lastname`,
 										`email`,
@@ -202,9 +202,14 @@ def add_Gestione_Ordini(conn, date_booking, date_checkin, date_checkout, payment
 
 
 def populateSQL():
-    pass
+    
+    conn = connessione()
+    add_Clienti(conn, 'John', 'Doe', 'jdoe@me.com', '1234567890', '123 Main St')
+    disconnesione(conn)
+    
 
 
 
 if __name__ == '__main__':
-    createSQL()
+    #createSQL()
+    populateSQL()

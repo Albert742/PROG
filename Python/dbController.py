@@ -127,7 +127,7 @@ def createSQL():
 
 ###############################################################################################################################
 
-def add_patient(conn, data_Nascita, genere):
+def add_Paziente(conn, data_Nascita, genere):
     sql = """INSERT INTO `lezione`.`Patient`(
 										`date_of_birth`,
 										`gender`
@@ -147,7 +147,7 @@ def add_patient(conn, data_Nascita, genere):
 
 
 
-def add_esercizi(conn, mywellness_id, exercise_name, exercise_type, equipment_name, equipment_type, cardio):
+def add_Esercizi(conn, mywellness_id, exercise_name, exercise_type, equipment_name, equipment_type, cardio):
     sql = """INSERT INTO `lezione`.`Exercise`(
                                         `mywellness_id`,
                                         `exercise_name`,
@@ -200,9 +200,12 @@ def add_Attivita_Fisica(conn, Durata, Caloria, Data, PazienteID, EserciziID):
 
 
 def populateSQL():
-    pass
+    conn = connessione()
+    add_Paziente(conn, '01/01/2000', 'M')
+    disconnesione(conn)
 
 
 
 if __name__ == '__main__':
-    createSQL()
+    #createSQL()
+    populateSQL()
