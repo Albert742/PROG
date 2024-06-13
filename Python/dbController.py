@@ -197,6 +197,32 @@ def add_Attivita_Fisica(conn, Durata, Caloria, Data, PazienteID, EserciziID):
     return query4db(conn, sql, args=args, commit=True)
 
 
+def get_DataNascita(conn, patientID):
+    sql = "SELECT `date_of_birth` FROM `lezione`.`Patient` WHERE `patientID` = %s"
+    args = (patientID,)
+    return query4db(conn, sql, args=args)[0][0]
+
+def get_all_DataNascita(conn):
+    sql = "SELECT `date_of_birth` FROM `lezione`.`Patient`"
+    return query4db(conn, sql)
+
+
+def get_all_PatientInfo(conn, PazienteID):
+    sql = "SELECT * FROM `lezione`.`Patient` WHERE `patientID` = %s"
+    args = (PazienteID,)
+    return query4db(conn, sql, args=args)
+
+def askSQL():
+    conn = connessione()
+    patientID = 3
+    #data_nascita = get_DataNascita(conn, patientID)
+    "get_DataNascita(conn, patientID)"
+    #print(f"Data nascita: {data_nascita}")
+    dati_paziente = get_all_PatientInfo(conn, patientID)
+    print(f"Dati paziente: {dati_paziente}")
+    #date_nascita = get_all_DataNascita(conn)
+    #print(f"Date nascita: {date_nascita}")
+    disconnesione(conn)
 
 
 def populateSQL():
@@ -210,4 +236,5 @@ def populateSQL():
 
 if __name__ == '__main__':
     #createSQL()
-    populateSQL()
+    #populateSQL()
+    askSQL()

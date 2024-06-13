@@ -124,7 +124,7 @@ def createSQL():
     conn = connessione()
     inizializza(conn)
     disconnesione(conn)
-
+    
 
 ###############################################################################################################################
 
@@ -199,19 +199,57 @@ def add_Gestione_Ordini(conn, date_booking, date_checkin, date_checkout, payment
     return query4db(conn, sql, args=args, commit=True)
 
 
+def get_booking_date(conn, orderID):
+    sql = "SELECT `date_booking` FROM `test`.`Order_Management` WHERE `orderID` = %s"
+    args = (orderID,)
+    return query4db(conn, sql, args=args)[0][0]
 
+def get_checkin_date(conn, orderID):
+    sql = "SELECT `date_checkin` FROM `test`.`Order_Management` WHERE `orderID` = %s"
+    args = (orderID,)
+    return query4db(conn, sql, args=args)[0][0]
+
+def get_checkout_date(conn, orderID):
+    sql = "SELECT `date_checkout` FROM `test`.`Order_Management` WHERE `orderID` = %s"
+    args = (orderID,)
+    return query4db(conn, sql, args=args)[0][0]
+
+def askSQL():
+    conn = connessione()
+    orderID = 1
+    booking = get_booking_date(conn, orderID)
+    chekin = get_checkin_date(conn, orderID)
+    checkout = get_checkout_date(conn, orderID)
+    print(f"Data prenotazione: {booking}")
+    print(f"Data check-in: {chekin}")
+    print(f"Data check-out: {checkout}")
+
+    """
+    get_booking_date(conn, orderID)
+    get_checkin_date(conn, orderID)
+    get_checkout_date(conn, orderID)
+    """
+    disconnesione(conn)
 
 def populateSQL():
     
     conn = connessione()
-    #add_Clienti(conn, 'John', 'Doe', 'jdoe@me.com', '1234567890', '123 Main St')
-    add_Stanze(conn, 'Single', 100.00, '101')
-    add_Gestione_Ordini(conn, '2020-01-01', '2020-01-02', '2020-01-03', 'Credit Card', 1, 1)
+    id_clienti = add_Clienti(conn, 'John', 'Doe', 'jdoe@me.com', '1234567890', '123 Main St')
+    id_stanze = add_Stanze(conn, 'Single', 100.00, '101')
+    add_Gestione_Ordini(conn, '2020-01-01', '2020-01-02', '2020-01-03', 'Credit Card', id_clienti, id_stanze)
     disconnesione(conn)
     
 
+def alterSQL():
+    pass
+
+
+
+def dropSQL():
+    pass
 
 
 if __name__ == '__main__':
     #createSQL()
-    populateSQL()
+    #populateSQL()
+    askSQL()
