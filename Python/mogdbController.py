@@ -82,11 +82,11 @@ def create_document(nomedb = 'lezione', nomecollezione = 'prova', mydict = None)
 if __name__ == '__main__':
 
     test_doc = {
-        "user_id":1993,
-        "nome":"Gabriele",
-        "cognome":"Gerbino"}
+        "modello": "Audi",
+        "targa": "ABC123",
+        "PROVA": True,}
 
-    create_document(mydict=test_doc)
+    create_document(mydict=test_doc, nomedb='lezione', nomecollezione='prova2')
 
     print(get_user_document(1993))
     print(get_all_documents())
