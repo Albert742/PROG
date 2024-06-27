@@ -6,7 +6,7 @@ def connessione(check=False):
     host = '127.0.0.1'
     user = 'root'
     pwd = '1234'
-    database = 'test'
+    database = 'hotel'
     port = 3307
 
     # Connessione al db
@@ -64,7 +64,15 @@ def query4db(conn, sql, args=None, commit=False):
 
     return results
 
+def creaHotel(conn):
+    sql = """CREATE TABLE IF NOT EXISTS Hotel(
+                hotelID BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT, 
+                name VARCHAR(45) NOT NULL, 
+                address VARCHAR(45) NOT NULL, 
+                PRIMARY KEY (hotelID)
+        )"""
 
+    return query4db(conn, sql, commit=True)
 
 def creaClienti(conn):
     sql = """CREATE TABLE IF NOT EXISTS Clients(
@@ -87,7 +95,9 @@ def creaStanze(conn):
                 room_type VARCHAR(45) NOT NULL, 
                 price DECIMAL(6,2) NOT NULL, 
                 room_number VARCHAR(45) NOT NULL, 
-                PRIMARY KEY (roomID)
+                hotelID BIGINT(20) UNSIGNED NOT NULL,
+                PRIMARY KEY (roomID),
+                FOREIGN KEY (hotelID) REFERENCES Hotel(hotelID)
         )"""
 
     return query4db(conn, sql, commit=True)
@@ -102,9 +112,11 @@ def creaGestioneOrdini(conn):
                 payment_method VARCHAR(45) NOT NULL, 
                 clientID BIGINT(20) UNSIGNED NOT NULL, 
                 roomID BIGINT(20) UNSIGNED NOT NULL, 
+                hotelID BIGINT(20) UNSIGNED NOT NULL,
                 PRIMARY KEY (orderID), 
                 FOREIGN KEY (clientID) REFERENCES Clients(clientID), 
-                FOREIGN KEY (roomID) REFERENCES Rooms(roomID)
+                FOREIGN KEY (roomID) REFERENCES Rooms(roomID),
+                FOREIGN KEY (hotelID) REFERENCES Hotel(hotelID)
         )"""
 
     return query4db(conn, sql, commit=True)
@@ -112,11 +124,13 @@ def creaGestioneOrdini(conn):
 
 def inizializza(conn):
     # Inizializzo le entità senza FK
-
+    
+    creaHotel(conn)
     creaClienti(conn)
-    creaStanze(conn)
 
     # Inizializzo le altre entità
+
+    creaStanze(conn)
     creaGestioneOrdini(conn)
 
 
@@ -128,8 +142,24 @@ def createSQL():
 
 ###############################################################################################################################
 
+def add_Hotel(conn, name, address):
+    sql = """INSERT INTO `hotel`.`Hotel`(
+                                        `name`,
+                                        `address`
+                                        )
+        VALUES
+                (
+                %s,
+                %s
+                );
+
+        """
+
+    args = (name, address, )
+
+    return query4db(conn, sql, args=args, commit=True)
 def add_Clienti(conn, firstname, lastname, email, phone, address):
-    sql = """INSERT INTO `test`.`Clients`(
+    sql = """INSERT INTO `hotel`.`Clients`(
 										`firstname`,
 										`lastname`,
 										`email`,
@@ -147,41 +177,44 @@ def add_Clienti(conn, firstname, lastname, email, phone, address):
 
 		"""
 
-    args = (firstname, lastname, email, phone, address, )
+    args = (firstname, lastname,email, phone, address, )
 
     return query4db(conn, sql, args=args, commit=True)
 
 
 
 
-def add_Stanze(conn, room_type, price, room_number):
-    sql = """INSERT INTO `test`.`Rooms`(
+def add_Stanze(conn, room_type, price, room_number, hotelID):
+    sql = """INSERT INTO `hotel`.`Rooms`(
                                         `room_type`,
                                         `price`,
-                                        `room_number`
+                                        `room_number`,
+                                        `hotelID`
                                         )
 		VALUES
 				(
 				%s,
 				%s,
-				%s
+				%s,
+                %s
 				);
 
 		"""
 
-    args = (room_type, price, room_number, )
+    args = (room_type, price, room_number, hotelID)
 
     return query4db(conn, sql, args=args, commit=True)
 
 
-def add_Gestione_Ordini(conn, date_booking, date_checkin, date_checkout, payment_method, clientID, roomID):
-    sql = """INSERT INTO `test`.`Order_Management`(
+def add_Gestione_Ordini(conn, date_booking, date_checkin, date_checkout, payment_method, clientID, roomID, hotelID):
+    sql = """INSERT INTO `hotel`.`Order_Management`(
                                         `date_booking`,
 										`date_checkin`,
 										`date_checkout`,
 										`payment_method`,
 										`clientID`,
-										`roomID`
+										`roomID`,
+                                        `hotelID`
                                         )
 		VALUES
 				(
@@ -190,31 +223,33 @@ def add_Gestione_Ordini(conn, date_booking, date_checkin, date_checkout, payment
 				%s,
 				%s,
 				%s,
-				%s
+				%s,
+                %s
 				);
 
 		"""
 
-    args = (date_booking, date_checkin, date_checkout, payment_method, clientID, roomID)
+    args = (date_booking, date_checkin, date_checkout, payment_method, clientID, roomID, hotelID)
     return query4db(conn, sql, args=args, commit=True)
 
 
 def get_booking_date(conn, orderID):
-    sql = "SELECT `date_booking` FROM `test`.`Order_Management` WHERE `orderID` = %s"
+    sql = "SELECT `date_booking` FROM `hotel`.`Order_Management` WHERE `orderID` = %s"
     args = (orderID,)
     return query4db(conn, sql, args=args)[0][0]
 
 def get_checkin_date(conn, orderID):
-    sql = "SELECT `date_checkin` FROM `test`.`Order_Management` WHERE `orderID` = %s"
+    sql = "SELECT `date_checkin` FROM `hotel`.`Order_Management` WHERE `orderID` = %s"
     args = (orderID,)
     return query4db(conn, sql, args=args)[0][0]
 
 def get_checkout_date(conn, orderID):
-    sql = "SELECT `date_checkout` FROM `test`.`Order_Management` WHERE `orderID` = %s"
+    sql = "SELECT `date_checkout` FROM `hotel`.`Order_Management` WHERE `orderID` = %s"
     args = (orderID,)
     return query4db(conn, sql, args=args)[0][0]
 
 def askSQL():
+    
     conn = connessione()
     orderID = 1
     booking = get_booking_date(conn, orderID)
@@ -234,22 +269,82 @@ def askSQL():
 def populateSQL():
     
     conn = connessione()
-    id_clienti = add_Clienti(conn, 'John', 'Doe', 'jdoe@me.com', '1234567890', '123 Main St')
-    id_stanze = add_Stanze(conn, 'Single', 100.00, '101')
-    add_Gestione_Ordini(conn, '2020-01-01', '2020-01-02', '2020-01-03', 'Credit Card', id_clienti, id_stanze)
+    id_hotel = add_Hotel(conn, 'Hilton', '123 Main St')
+    id_clienti = add_Clienti(conn, 'John', 'Doe', 'jdoe@me.com', '1234567890', '123 Second St')
+    id_stanze = add_Stanze(conn, 'Single', 100.00, '101', id_hotel)
+    add_Gestione_Ordini(conn, '2020-01-01', '2020-01-02', '2020-01-03', 'Credit Card', id_clienti, id_stanze, id_hotel)
     disconnesione(conn)
     
 
-def alterSQL():
-    pass
+def alterSQL(table_name, column_name, column_type, position=None):
+    """
+    Modifica una tabella aggiungendo una colonna con il tipo specificato.
+    
+    Args:
+        table_name (str): Nome della tabella da modificare.
+        column_name (str): Nome della nuova colonna.
+        column_type (str): Tipo della nuova colonna.
+        position (str, optional): Posizione della nuova colonna (es. 'AFTER column_name').
+    """
+    conn = connessione()
+    
+    sql = f"""ALTER TABLE `{table_name}`
+              ADD COLUMN `{column_name}` {column_type}"""
+    
+    if position:
+        sql += f" {position}"
+    
+    sql += ";"
+    
+    try:
+        query4db(conn, sql, commit=True)
+        print(f"Colonna `{column_name}` aggiunta alla tabella `{table_name}`.")
+    except mariadb.ProgrammingError as e:
+        print(f"Errore nell'aggiunta della colonna `{column_name}`: {e}")
+    finally:
+        disconnesione(conn)
+
+def dropSQL(tables, if_exists=True):
+    """
+    Cancella una o più tabelle dal database con gestione dei controlli delle chiavi esterne.
+    
+    Args:
+        tables (str or list): Nome della tabella o lista delle tabelle da eliminare.
+        if_exists (bool, optional): Se True, aggiunge la clausola IF EXISTS.
+    """
+    if isinstance(tables, str):
+        tables = [tables]
+    
+    conn = connessione()
+    
+    # Disabilita i controlli delle chiavi esterne
+    query4db(conn, "SET FOREIGN_KEY_CHECKS = 0;", commit=True)
+    
+    for table_name in tables:
+        if if_exists:
+            sql = f"""DROP TABLE IF EXISTS `{table_name}`;"""
+        else:
+            sql = f"""DROP TABLE `{table_name}`;"""
+        
+        try:
+            query4db(conn, sql, commit=True)
+            print(f"Tabella `{table_name}` eliminata.")
+        except mariadb.ProgrammingError as e:
+            print(f"Errore nell'eliminazione della tabella `{table_name}`: {e}")
+    
+    # Riabilita i controlli delle chiavi esterne
+    query4db(conn, "SET FOREIGN_KEY_CHECKS = 1;", commit=True)
+    
+    disconnesione(conn)
 
 
-
-def dropSQL():
-    pass
 
 
 if __name__ == '__main__':
     #createSQL()
-    #populateSQL()
-    askSQL()
+    populateSQL()
+    #askSQL()
+    #alterSQL()
+    #dropSQL(['hotel', 'clients', 'rooms', 'order_management'])
+
+

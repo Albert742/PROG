@@ -1,12 +1,11 @@
 <!DOCTYPE html>
-<html lang="it">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gatto</title>
+    <title>Mia Pagina HTML</title>
     <style>
         body {
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
@@ -16,6 +15,7 @@
             margin: 0;
             font-family: monospace;
         }
+        
         @keyframes gradient {
             0% {
                 background-position: 0% 50%;
@@ -27,33 +27,26 @@
                 background-position: 0% 50%;
             }
         }
-
-        .container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        
+        header {
+            text-align: center;
+            margin-bottom: 20px;
         }
-
-        .gatto {
-            white-space: pre;
-            animation: swing 1s infinite alternate ease-in-out;
-            font-size: 20px;
+        
+        h1 {
+            margin: 0;
         }
-
-        @keyframes swing {
-            0% { transform: rotate(-10deg); }
-            100% { transform: rotate(10deg); }
+        
+        p {
+            text-align: center;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Gatto</h1>
-        <div class="gatto">
-            /\_/\  
-           ( o.o ) 
-            > ^ <
-        </div>
-    </div>
+    <header>
+        <h1>Benvenuto!</h1>
+    </header>
+    
+    <p>Questa è una semplice pagina HTML con un po' di CSS.</p>
 </body>
 </html>
