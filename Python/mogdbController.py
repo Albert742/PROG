@@ -2,6 +2,8 @@ import pymongo
 from bson import ObjectId, json_util
 import json
 
+from pymongo import results
+
 
 def make_clientconnection():
 
@@ -76,17 +78,27 @@ def create_document(nomedb = 'lezione', nomecollezione = 'prova', mydict = None)
     new_id = str(x.inserted_id)
     return json.dumps({"id": new_id})
 
+def update_document(document_id, db_name = 'lezione', collection_name = 'prova', mydict = {}):
+    client = make_clientconnection()
+    db = make_dbconnection(client, db_name)
+    collection = make_collectionconnection(db, collection_name)
 
-
+    results = collection.find_one_and_update(
+        {"_id": ObjectId(document_id)},
+        {"$set": mydict},
+        upsert=True
+    )
+    return results    
 
 if __name__ == '__main__':
 
     test_doc = {
-        "modello": "Audi",
+        "modello": "BMW",
         "targa": "ABC123",
         "PROVA": True,}
 
-    create_document(mydict=test_doc, nomedb='lezione', nomecollezione='prova2')
+    #create_document(mydict=test_doc, nomedb='lezione', nomecollezione='prova2')
 
+    update_document('667d42118b0970d991b3640c', db_name='lezione', collection_name='prova2', mydict={'PROVA': False})
     print(get_user_document(1993))
     print(get_all_documents())
