@@ -1,0 +1,11 @@
+version: "1"
+services:
+
+  mongo:
+    image: mongo:4
+    restart: always
+    command: --nojournal
+    ports:
+      - 27117:27017
+    volumes:
+      - './mongo_data:/data/db' 
