@@ -5,6 +5,6 @@ services:
     restart: always
     command: --nojournal
     ports:
-      - 27017:27017
+      - 27027:27017
     volumes:
       - './mongo_data:/data/db'
