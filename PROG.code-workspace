@@ -30,6 +30,9 @@
 		},
 		{
 			"path": "MongoDB"
+		},
+		{
+			"path": "Progetto Magazzino"
 		}
 	],
 	"settings": {
