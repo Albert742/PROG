@@ -24,6 +24,12 @@
 		},
 		{
 			"path": "HTML"
+		},
+		{
+			"path": "MD"
+		},
+		{
+			"path": "MongoDB"
 		}
 	],
 	"settings": {
