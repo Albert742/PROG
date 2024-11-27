@@ -45,6 +45,22 @@
 		],
 		"java.compile.nullAnalysis.mode": "automatic",
 		"java.configuration.updateBuildConfiguration": "automatic",
-		"powershell.cwd": "Shell"
+		"powershell.cwd": "Shell",
+		"sqltools.connections": [
+			{
+				"mysqlOptions": {
+					"authProtocol": "default",
+					"enableSsl": "Disabled"
+				},
+				"previewLimit": 50,
+				"server": "localhost",
+				"port": 3306,
+				"driver": "MariaDB",
+				"name": "MariaDB",
+				"database": "magazzino",
+				"username": "root",
+				"password": "1234"
+			}
+		]
 	}
 }

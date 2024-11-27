@@ -120,11 +120,10 @@ CREATE TABLE StoricoMovimentiRobot (
 );
 
 
--- Tabella Dipendenti
 CREATE TABLE Dipendenti (
     ID_Dipendente INT PRIMARY KEY AUTO_INCREMENT,
     Nome VARCHAR(255) NOT NULL,
     Cognome VARCHAR(255) NOT NULL,
-    Mansione VARCHAR(255), -- Es. "Operatore", "Manutentore", "Supervisore"
+    Mansione VARCHAR(255),
     DataAssunzione DATE
 );
