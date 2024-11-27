@@ -1,0 +1,22 @@
+Prova in itinere – compito C
+parte a
+Si richiede una funzione Python che dato un dizionario controlli se ci sono due item con eguale
+valore.
+ESEMPIO
+D1 = {‘a’:18, ‘b’:18, ’c’:24} → True
+D2 = {‘a’:18, ‘b’:11, ’c’:24} → False
+parte b
+Si richiede una funzione Python che data una stringa ‘conti’ il numero di caratteri in essa diversi da
+un insieme di caratteri S assegnato
+ESEMPIO
+s = “problema” S ={‘a’,’b’} → 6
+parte c
+Si richiede una funzione che apra un file di testo e dato un insieme di caratteri S restituisca una
+tupla i cui elementi siano:
+(<numero_parole_con_caratteri_in_S>,
+<numero_parole_senza_caratteri_in_S>)
+parte d
+Si richiede una funzione che apra un file di testo dato il suo nome sul disco, e dato un insieme di
+caratteri scriva in un file di testo che abbia lo stesso nome del file originale con il suffisso “counted”
+un testo che contenga il risultato della funzione di cui al punto b su ciascuna parola nel testo
+originale, separati da virgole.
