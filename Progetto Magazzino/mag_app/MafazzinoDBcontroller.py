@@ -10,7 +10,7 @@ def connessione(**kwargs):
         'user': 'root',
         'password': '1234',
         'database': 'magazzino',
-        'port': 3307
+        'port': 3306
     }
     config = {**default_config, **kwargs}
     conn = mariadb.connect(**config)
@@ -397,77 +397,227 @@ def populateSQL():
                 
         # Clienti
         clienti = [
-            ("Farmacia Rossi", "Via Milano 5, Torino", "0112233445", "rossi@farmacia.com", "IT11223344556"),
-            ("Supermercato Verde", "Via Napoli 22, Roma", "0665544332", "verde@supermercati.com", "IT66778899001"),
+            ("Supermercato Sole", "Via Luminoso 12, Roma", "0643212345", "info@supermercatosole.it", "IT11223344550"),
+            ("Farmacia Salute", "Corso Medicina 8, Napoli", "0819876543", "ordini@farmaciasalute.it", "IT22334455660"),
+            ("Bioshop Natura", "Piazza Verde 20, Milano", "0234567890", "contact@bioshopnatura.it", "IT33445566770"),
+            ("Clinica San Marco", "Via della Cura 15, Firenze", "0557654321", "acquisti@sanmarco.it", "IT44556677880"),
+            ("Ristorante Gustoso", "Via dei Sapori 5, Torino", "0116789012", "info@gustoso.it", "IT55667788990"),
         ]
+
+        # Inserimento nella tabella Clienti
         for c in clienti:
             add_record(conn, "Clienti", 
                 ["Nome", "Indirizzo", "Telefono", "Email", "PartitaIVA"], c)
 
         # Ordini
         ordini = [
-            ("2023-11-20 10:00:00", "Entrata", 1, None, "In elaborazione"),
-            ("2023-11-25 15:30:00", "Uscita", None, 1, "Concluso"),
+            # Ordini di entrata (fornitori)
+            ("Entrata", 1, None, "In elaborazione"),  # Acquisto da FreshFarm S.r.l.
+            ("Entrata", 2, None, "Spedito"),          # Acquisto da PharmaLife S.p.A.
+            # Ordini di uscita (clienti)
+            ("Uscita", None, 1, "Concluso"),          # Vendita a Supermercato Sole
+            ("Uscita", None, 2, "Spedito"),           # Vendita a Farmacia Salute
+            ("Uscita", None, 3, "In elaborazione"),   # Vendita a Bioshop Natura
         ]
+
+        # Inserimento nella tabella Ordini
         for o in ordini:
             add_record(conn, "Ordini", 
-                ["DataOrdine", "Tipo", "ID_Fornitore", "ID_Cliente", "Stato"], o)
-
+                ["Tipo", "ID_Fornitore", "ID_Cliente", "Stato"], o)
+            
         # Dettagli Ordini
         dettagli_ordini = [
-            (1, 1, 50),
-            (2, 2, 20),
+            # Dettagli per ordini di entrata
+            (1, 1, 200),  # Lotto001 (Mela Golden) acquistato nel primo ordine
+            (2, 6, 500),  # Lotto006 (Paracetamolo 500mg) acquistato nel secondo ordine
+            # Dettagli per ordini di uscita
+            (3, 1, 100),  # Lotto001 (Mela Golden) venduto nel terzo ordine
+            (3, 5, 50),   # Lotto004 (Pasta di Gragnano) venduto nel terzo ordine
+            (4, 6, 200),  # Lotto006 (Paracetamolo 500mg) venduto nel quarto ordine
+            (5, 3, 50),   # Lotto003 (Farina di Grano Duro) venduto nel quinto ordine
         ]
+
+        # Inserimento nella tabella DettagliOrdini
         for d in dettagli_ordini:
             add_record(conn, "DettagliOrdini", 
                 ["ID_Ordine", "ID_Lotto", "Quantita"], d)
 
-        # Baie di Carico/Scarico
+        # Lista di baie di carico e scarico
         baie = [
-            (3, "Baia 1", "Carico", "Libera"),
-            (4, "Baia 2", "Scarico", "Libera"),
+            (3, "Baia 1", "Carico", "Libera"),  # Zona "Carico"
+            (3, "Baia 2", "Carico", "Occupata"),  # Zona "Carico"
+            (4, "Baia 3", "Scarico", "Libera"),  # Zona "Scarico"
+            (4, "Baia 4", "Scarico", "Manutenzione"),  # Zona "Scarico"
         ]
+
+        # Inserimento nella tabella BaieCaricoScarico
         for b in baie:
             add_record(conn, "BaieCaricoScarico", 
                 ["ZonaID", "Nome", "Tipo", "Stato"], b)
 
-        # Dipendenti
-        dipendenti = [
-            ("Mario", "Rossi", "Magazziniere", "2020-01-15"),
-            ("Giulia", "Verdi", "Responsabile Ordini", "2018-05-10"),
+        # Lista di sensori
+        sensori = [
+            ("Presenza", 1, 1, "2024-11-01 08:00:00"),  # Sensore presenza in Stoccaggio_Alimentari
+            ("Temperatura", 1, 22.5, "2024-11-01 08:00:00"),  # Sensore temperatura in Stoccaggio_Alimentari
+            ("Umidità", 1, 45.0, "2024-11-01 08:00:00"),  # Sensore umidità in Stoccaggio_Alimentari
+            ("Presenza", 2, 1, "2024-11-01 08:00:00"),  # Sensore presenza in Stoccaggio_Farmaceutici
         ]
-        for d in dipendenti:
-            add_record(conn, "Dipendenti", 
-                ["Nome", "Cognome", "Mansione", "DataAssunzione"], d)
 
-        # Credenziali
-        credenziali = [
-            ("admin", "hashed_password_1", "Amministratore", 1),
-            ("operatore1", "hashed_password_2", "Operatore", 2),
+        # Inserimento nella tabella Sensori
+        for s in sensori:
+            add_record(conn, "Sensori", 
+                ["Tipo", "ID_Zona", "Valore", "DataLettura"], s)
+
+        # Lista di stazioni di ricarica
+        stazioni = [
+            (1, "Ricarica A1", "Libera"),  # Zona Stoccaggio_Alimentari
+            (2, "Ricarica B1", "Occupata"),  # Zona Stoccaggio_Farmaceutici
         ]
-        for cred in credenziali:
-            add_record(conn, "Credenziali", 
-                ["Username", "PasswordHash", "Ruolo", "ID_Dipendente"], cred)
+
+        # Inserimento nella tabella StazioneRicarica
+        for s in stazioni:
+            add_record(conn, "StazioneRicarica", 
+                ["ZonaID", "Nome", "Stato"], s)
+
+        # Lista di robot
+        robot = [
+            (1, 1, "Robot A", "Disponibile", "Zona A1", 50, 1),  # Associato a sensore in Zona 1
+            (2, 2, "Robot B", "Occupato", "Zona B1", 100, 2),  # Associato a sensore in Zona 2
+        ]
+
+        # Inserimento nella tabella Robot
+        for r in robot:
+            add_record(conn, "Robot", 
+                ["ID_Sensore", "ID_Zona", "Nome", "Stato", "PosizioneAttuale", "Capacita", "ID_Ricarica"], r)
+
+        # Lista di richieste di movimento
+        richieste = [
+            (1, 2, 2, 1, "In attesa", 1),  # Lotto 1 verso Zona 2
+            (6, 1, 1, 2, "Assegnata", 2),  # Lotto 6 verso Zona 1, robot assegnato
+        ]
+
+        # Inserimento nella tabella RichiesteMovimento
+        for r in richieste:
+            add_record(conn, "RichiesteMovimento", 
+                ["ID_Lotto", "ID_Zona_Destinazione", "ID_Scaffalatura_Destinazione", "Priorita", "Stato", "ID_Robot"], r)
+
+        # Lista di movimenti di magazzino
+        movimenti = [
+            (1, "2024-10-01 10:00:00", "Entrata", 100, None, 1),  # Lotto 1 in entrata verso Zona 1
+            (6, "2024-10-02 12:00:00", "Spostamento", 50, 1, 2),  # Lotto 6 spostato da Zona 1 a Zona 2
+        ]
+
+        # Inserimento nella tabella StoricoMovimentiMagazzino
+        for m in movimenti:
+            add_record(conn, "StoricoMovimentiMagazzino", 
+                ["ID_Lotto", "DataMovimento", "TipoMovimento", "Quantita", "ID_Zona_Partenza", "ID_Zona_Arrivo"], m)
+
+        # Lista di controlli qualità
+        controlli = [
+            (1, 1, "Successo", "Movimento completato senza errori."),  # Controllo di Lotto 1
+            (2, 2, "Fallimento", "Errore durante lo spostamento."),    # Controllo di Lotto 6
+        ]
+
+        # Inserimento nella tabella ControlloQualitaMovimenti
+        for c in controlli:
+            add_record(conn, "ControlloQualitaMovimenti", 
+                ["ID_Richiesta", "ID_Robot", "Esito", "Note"], c)
 
         # Veicoli
         veicoli = [
-            ("Bilico", 2000, "Disponibile", "AA123BB"),
-            ("Furgone", 500, "Disponibile", "CC456DD"),
+            ("Bilico", 20000, "Disponibile", "AB123CD"),
+            ("Furgone", 3000, "In uso", "EF456GH"),
+            ("Carrello_Elevatore", 500, "Manutenzione", "IJ789KL")
         ]
         for v in veicoli:
-            add_record(conn, "Veicoli", 
-                ["Tipo", "Capacita", "Stato", "Targa"], v)
+            add_record(conn, "Veicoli", ["Tipo", "Capacita", "Stato", "Targa"], v)
 
         # Consegne
         consegne = [
-            (1, 1, "2023-11-21", "Pianificata"),
-            (2, 2, "2023-11-26", "Completata"),
+            (1, 1, "2024-12-01", "Pianificata"),
+            (2, 2, "2024-12-02", "In corso"),
+            (3, None, "2024-12-03", "Annullata")
         ]
         for c in consegne:
-            add_record(conn, "Consegne", 
-                ["ID_Ordine", "ID_Veicolo", "DataConsegna", "Stato"], c)
+            add_record(conn, "Consegne", ["ID_Ordine", "ID_Veicolo", "DataConsegna", "Stato"], c)
 
-        print("Database popolato con successo!")
+        # ManutenzioneRobot
+        manutenzione_robot = [
+            (1, "2024-11-20", "Sostituzione batteria", "Programmata", "Necessaria sostituzione per efficienza."),
+            (2, "2024-11-22", "Aggiornamento firmware", "Completata", "Firmware aggiornato con successo.")
+        ]
+        for mr in manutenzione_robot:
+            add_record(conn, "ManutenzioneRobot", ["ID_Robot", "DataManutenzione", "Tipo", "Stato", "Note"], mr)
+
+        # ManutenzioneScaffalature
+        manutenzione_scaffalature = [
+            (1, "2024-11-18", "Riparazione struttura", "Completata", "Riparazione saldature completata."),
+            (2, "2024-11-25", "Verifica stabilità", "Programmata", "Verifica programmata per lunedì.")
+        ]
+        for ms in manutenzione_scaffalature:
+            add_record(conn, "ManutenzioneScaffalature", ["ID_Scaffalatura", "DataManutenzione", "Tipo", "Stato", "Note"], ms)
+
+        # ManutenzioneZone
+        manutenzione_zone = [
+            (1, "2024-11-15", "Sanificazione", "Completata", "Sanificazione periodica completata."),
+            (2, "2024-12-01", "Verifica impianto elettrico", "Programmata", "Verifica prevista nella mattinata.")
+        ]
+        for mz in manutenzione_zone:
+            add_record(conn, "ManutenzioneZone", ["ID_Zona", "DataManutenzione", "Tipo", "Stato", "Note"], mz)
+
+        # ManutenzioneVeicoli
+        manutenzione_veicoli = [
+            (1, "2024-11-30", "Cambio olio", "Programmata", "Cambio olio previsto per fine mese."),
+            (3, "2024-11-25", "Sostituzione ruote", "Completata", "Ruote sostituite con nuove gomme.")
+        ]
+        for mv in manutenzione_veicoli:
+            add_record(conn, "ManutenzioneVeicoli", ["ID_Veicolo", "DataManutenzione", "Tipo", "Stato", "Note"], mv)
+
+        # Dipendenti
+        dipendenti = [
+            ("Mario", "Rossi", "Magazziniere", "2020-05-15"),
+            ("Luisa", "Bianchi", "Tecnico", "2019-03-10"),
+            ("Giulia", "Verdi", "Amministratore", "2015-01-20")
+        ]
+        for d in dipendenti:
+            add_record(conn, "Dipendenti", ["Nome", "Cognome", "Mansione", "DataAssunzione"], d)
+
+        # TurniDipendenti
+        turni = [
+            (1, "2024-11-28 08:00:00", "2024-11-28 16:00:00", "Magazziniere"),
+            (2, "2024-11-28 09:00:00", "2024-11-28 17:00:00", "Tecnico"),
+            (3, "2024-11-28 10:00:00", "2024-11-28 18:00:00", "Amministratore")
+        ]
+        for t in turni:
+            add_record(conn, "TurniDipendenti", ["ID_Dipendente", "DataInizio", "DataFine", "Mansione"], t)
+
+        # Credenziali
+        credenziali = [
+            ("mrossi", "hashed_password_1", "Operatore", 1),
+            ("lbianchi", "hashed_password_2", "Tecnico", 2),
+            ("gverdi", "hashed_password_3", "Amministratore", 3)
+        ]
+        for c in credenziali:
+            add_record(conn, "Credenziali", ["Username", "PasswordHash", "Ruolo", "ID_Dipendente"], c)
+
+        # AccessiUtenti
+        accessi = [
+            (1, "2024-11-28 08:10:00", "Successo", "192.168.1.1"),
+            (2, "2024-11-28 08:15:00", "Fallito", "192.168.1.2"),
+            (3, "2024-11-28 08:20:00", "Successo", "192.168.1.3")
+        ]
+        for a in accessi:
+            add_record(conn, "AccessiUtenti", ["ID_Utente", "DataOra", "Esito", "IP"], a)
+
+        # LogEventi
+        log_eventi = [
+            ("2024-11-28 08:11:00", 1, "Accesso effettuato", "Accesso con successo al sistema."),
+            ("2024-11-28 08:16:00", 2, "Tentativo di accesso", "Credenziali errate."),
+            ("2024-11-28 08:21:00", 3, "Modifica dati", "Aggiornati i dati di manutenzione.")
+        ]
+        for le in log_eventi:
+            add_record(conn, "LogEventi", ["DataOra", "ID_Utente", "Azione", "Dettagli"], le)
+
 
 def alterSQL(table_name, column_name, column_type, position=None):
     """
