@@ -10,7 +10,7 @@ def connessione(**kwargs):
         'user': 'root',
         'password': '1234',
         'database': 'magazzino',
-        'port': 3306
+        'port': 3307
     }
     config = {**default_config, **kwargs}
     conn = mariadb.connect(**config)
