@@ -11,24 +11,13 @@ def connessione(**kwargs):
         'user': 'root',
         'password': '1234',
         'database': 'magazzino',
-        'port': 3307
+        'port': 3306
     }
     config = {**default_config, **kwargs}
     conn = mariadb.connect(**config)
     conn.auto_reconnect = True
     return conn
 
-"""
-def query4db(conn, sql, args=None, commit=False):
-    Esegue una query sul database.
-    with conn.cursor() as cursore:
-        cursore.execute(sql, args or ())
-        if commit:
-            conn.commit()
-            return cursore.lastrowid
-        else:
-            return cursore.fetchall()
-"""
 def query4db(conn, sql, args=None, commit=False, retry_count=3, retry_delay=1):
     """
     Esegue una query sul database.
@@ -40,7 +29,6 @@ def query4db(conn, sql, args=None, commit=False, retry_count=3, retry_delay=1):
                 if commit:
                     conn.commit()
                     return cursore.lastrowid
-                # No need to return anything else
             break
         except mariadb.OperationalError as e:
             if e.args[0] == 1205:  # Lock wait timeout exceeded
@@ -318,10 +306,29 @@ def inizializza(conn):
 def add_record(conn, table, fields, values):
     """
     Aggiunge un record a una tabella specificata.
+    
+    Args:
+        conn: Oggetto connessione al database.
+        table (str): Nome della tabella.
+        fields (list): Lista dei nomi delle colonne in cui inserire i valori.
+        values (list): Lista dei valori da inserire (nell'ordine corrispondente ai campi).
+    
+    Returns:
+        bool: True se l'operazione è andata a buon fine, False altrimenti.
     """
-    placeholders = ', '.join(['%s'] * len(values))
-    sql = f"INSERT INTO `{table}` ({', '.join(fields)}) VALUES ({placeholders})"
-    return query4db(conn, sql, args=values, commit=True)
+    try:
+        # Crea i placeholders per i valori
+        placeholders = ', '.join(['%s'] * len(values))
+        
+        # Costruisce la query SQL
+        sql = f"INSERT INTO `{table}` ({', '.join([f'`{field}`' for field in fields])}) VALUES ({placeholders})"
+        
+        # Esegue la query
+        return query4db(conn, sql, args=values, commit=True)
+    except Exception as e:
+        print(f"Errore durante l'inserimento del record nella tabella {table}: {e}")
+        return False
+
 
 def createSQL():
     with connessione() as conn:
@@ -647,11 +654,18 @@ def alterSQL(table_name, column_name, column_type, position=None):
     """
     Aggiunge una colonna a una tabella esistente.
     """
-    with connessione() as conn:
+    try:
+        # Costruisce la query ALTER TABLE
         sql = f"ALTER TABLE `{table_name}` ADD COLUMN `{column_name}` {column_type}"
         if position:
             sql += f" {position}"
-        query4db(conn, sql, commit=True)
+
+        # Esegue la query
+        with connessione() as conn:
+            return query4db(conn, sql, commit=True)
+    except Exception as e:
+        print(f"Errore durante l'alterazione della tabella: {e}")
+        return False
 
 def dropSQL(tables, if_exists=True):
     """
@@ -664,13 +678,62 @@ def dropSQL(tables, if_exists=True):
         for table_name in tables:
             sql = f"DROP TABLE IF EXISTS `{table_name}`;" if if_exists else f"DROP TABLE `{table_name}`;"
             query4db(conn, sql, commit=True)
-        query4db(conn, "SET FOREIGN_KEY_CHECKS = 1;", commit=True)
+    return query4db(conn, "SET FOREIGN_KEY_CHECKS = 1;", commit=True)
 
+def selectSQL(table_name, columns="*", conditions=None):
+    """
+    Seleziona records da una tabella.
+    
+    """
+    # Trasforma le colonne in stringa se è una lista
+    if isinstance(columns, list):
+        columns = ", ".join(columns)
+    
+    # Crea la query SQL
+    sql = f"SELECT {columns} FROM {table_name}"
+    if conditions:
+        sql += f" WHERE {conditions}"
+    
+    try:
+        # Gestisce la connessione al database
+        with connessione() as conn:
+            # Esegue la query e restituisce i risultati
+            return query4db(conn, sql=sql, commit=False)
+    except Exception as e:
+        print(f"Errore durante l'esecuzione della query: {e}")
+        return None
+
+def updateSQL(table_name, column_name, value, conditions=None):
+    """
+    Aggiorna un record nella tabella.
+    
+    Args:
+        table_name (str): Nome della tabella.
+        column_name (str): Nome della colonna da aggiornare.
+        value: Nuovo valore da assegnare alla colonna.
+        conditions (str, optional): Clausola WHERE per filtrare i record da aggiornare.
+    
+    Returns:
+        bool: True se l'operazione ha successo, False altrimenti.
+    """
+    try:
+        # Costruisce la query SQL
+        sql = f"UPDATE `{table_name}` SET `{column_name}` = %s"
+        if conditions:
+            sql += f" WHERE {conditions}"
+        
+        # Esegue la query con il valore specificato
+        with connessione() as conn:
+            return query4db(conn, sql, (value,), commit=True)
+    except Exception as e:
+        print(f"Errore durante l'aggiornamento della tabella: {e}")
+        return False
 
 
 if __name__ == '__main__':
+    pass
     #createSQL()
-    populateSQL()
+    #populateSQL()
     #askSQL()
     #alterSQL('Product', 'new_column', 'VARCHAR(50)')
     #dropSQL('ControlloQualitaMovimenti', if_exists=False)
