@@ -1,7 +1,7 @@
 import streamlit as st
 import mariadb
 from datetime import datetime
-from MafazzinoDBcontroller import connessione, query4db  # Importa le funzioni dal tuo modulo
+from mag_app.MagDBcontroller import connessione, query4db  # Importa le funzioni dal tuo modulo
 
 # Configurazione della connessione al database
 conn = connessione()

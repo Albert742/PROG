@@ -1,5 +1,6 @@
 import mariadb
 from datetime import datetime
+import time
 
 def connessione(**kwargs):
     """
@@ -10,17 +11,16 @@ def connessione(**kwargs):
         'user': 'root',
         'password': '1234',
         'database': 'magazzino',
-        'port': 3306
+        'port': 3307
     }
     config = {**default_config, **kwargs}
     conn = mariadb.connect(**config)
     conn.auto_reconnect = True
     return conn
 
+"""
 def query4db(conn, sql, args=None, commit=False):
-    """
     Esegue una query sul database.
-    """
     with conn.cursor() as cursore:
         cursore.execute(sql, args or ())
         if commit:
@@ -28,6 +28,27 @@ def query4db(conn, sql, args=None, commit=False):
             return cursore.lastrowid
         else:
             return cursore.fetchall()
+"""
+def query4db(conn, sql, args=None, commit=False, retry_count=3, retry_delay=1):
+    """
+    Esegue una query sul database.
+    """
+    for attempt in range(retry_count):
+        try:
+            with conn.cursor() as cursore:
+                cursore.execute(sql, args or ())
+                if commit:
+                    conn.commit()
+                    return cursore.lastrowid
+                # No need to return anything else
+            break
+        except mariadb.OperationalError as e:
+            if e.args[0] == 1205:  # Lock wait timeout exceeded
+                time.sleep(retry_delay)
+            else:
+                raise
+    else:
+        raise mariadb.OperationalError("Failed to execute query after {} retries".format(retry_count))
 
 def crea_tabella(conn, nome_tabella, definizione):
     """
@@ -249,15 +270,17 @@ def inizializza(conn):
         """,
         # Gestione personale e accesso
         "Dipendenti": """
-            ID_Dipendente INT PRIMARY KEY AUTO_INCREMENT,
+            ID_Dipendente VARCHAR(10) PRIMARY KEY,
+            CodiceFiscale VARCHAR(16) NOT NULL UNIQUE,
             Nome VARCHAR(255) NOT NULL,
             Cognome VARCHAR(255) NOT NULL,
+            Ruolo ENUM('Amministratore', 'Operatore', 'Tecnico') NOT NULL,
             Mansione VARCHAR(255),
             DataAssunzione DATE
         """,
         "TurniDipendenti": """
             ID_Turno INT PRIMARY KEY AUTO_INCREMENT,
-            ID_Dipendente INT NOT NULL,
+            ID_Dipendente VARCHAR(10) NOT NULL,
             DataInizio TIMESTAMP NOT NULL,
             DataFine TIMESTAMP NOT NULL,
             Mansione VARCHAR(255),
@@ -266,9 +289,9 @@ def inizializza(conn):
         "Credenziali": """
             ID_Utente INT PRIMARY KEY AUTO_INCREMENT,
             Username VARCHAR(255) NOT NULL UNIQUE,
-            PasswordHash VARCHAR(255) NOT NULL,
-            Ruolo ENUM('Amministratore', 'Operatore', 'Tecnico') NOT NULL,
-            ID_Dipendente INT,
+            Password VARCHAR(255) NOT NULL,
+            Ruolo ENUM('Amministratore', 'Operatore', 'Tecnico', 'Guest') NOT NULL,
+            ID_Dipendente VARCHAR(10),
             FOREIGN KEY (ID_Dipendente) REFERENCES Dipendenti(ID_Dipendente) ON DELETE SET NULL
         """,
         "AccessiUtenti": """
@@ -308,7 +331,27 @@ def populateSQL():
     """
     Popola il database con dati coerenti e pertinenti.
     """
+
     with connessione() as conn:
+        
+        # Dipendenti
+        dipendenti = [
+            ("0f8f13e503", "RSSMRA80A01C351O", "Mario", "Rossi", "Operatore", "Magazziniere", "2020-05-15"),
+            ("5f6c960209","BNCLSU98E54C351X", "Luisa", "Bianchi", "Tecnico", "Tecnico", "2019-03-10"),
+            ("0f0abffd80", "VRDGLI90D43C351B", "Giulia", "Verdi", "Amministratore", "Amministratore", "2015-01-20")
+        ]
+        for d in dipendenti:
+            add_record(conn, "Dipendenti", ["ID_Dipendente", "CodiceFiscale", "Nome", "Cognome", "Ruolo", "Mansione", "DataAssunzione"], d)
+        """
+        # Credenziali
+        credenziali = [
+            ("lbianchi", "TestT", "Tecnico", 2),
+            ("gverdi", "TestA", "Amministratore", 3)
+        ]
+        
+        for c in credenziali:
+            add_record(conn, "Credenziali", ["Username", "Password", "Ruolo", "ID_Dipendente"], c)
+
         # Lista di fornitori
         fornitori = [
             ("FreshFarm S.r.l.", "Via delle Mele 25, Torino", "0112233445", "info@freshfarm.it", "IT00112233445"),
@@ -573,15 +616,6 @@ def populateSQL():
         for mv in manutenzione_veicoli:
             add_record(conn, "ManutenzioneVeicoli", ["ID_Veicolo", "DataManutenzione", "Tipo", "Stato", "Note"], mv)
 
-        # Dipendenti
-        dipendenti = [
-            ("Mario", "Rossi", "Magazziniere", "2020-05-15"),
-            ("Luisa", "Bianchi", "Tecnico", "2019-03-10"),
-            ("Giulia", "Verdi", "Amministratore", "2015-01-20")
-        ]
-        for d in dipendenti:
-            add_record(conn, "Dipendenti", ["Nome", "Cognome", "Mansione", "DataAssunzione"], d)
-
         # TurniDipendenti
         turni = [
             (1, "2024-11-28 08:00:00", "2024-11-28 16:00:00", "Magazziniere"),
@@ -590,15 +624,6 @@ def populateSQL():
         ]
         for t in turni:
             add_record(conn, "TurniDipendenti", ["ID_Dipendente", "DataInizio", "DataFine", "Mansione"], t)
-
-        # Credenziali
-        credenziali = [
-            ("mrossi", "hashed_password_1", "Operatore", 1),
-            ("lbianchi", "hashed_password_2", "Tecnico", 2),
-            ("gverdi", "hashed_password_3", "Amministratore", 3)
-        ]
-        for c in credenziali:
-            add_record(conn, "Credenziali", ["Username", "PasswordHash", "Ruolo", "ID_Dipendente"], c)
 
         # AccessiUtenti
         accessi = [
@@ -617,8 +642,7 @@ def populateSQL():
         ]
         for le in log_eventi:
             add_record(conn, "LogEventi", ["DataOra", "ID_Utente", "Azione", "Dettagli"], le)
-
-
+"""
 def alterSQL(table_name, column_name, column_type, position=None):
     """
     Aggiunge una colonna a una tabella esistente.
