@@ -1,18 +1,19 @@
 from sqlalchemy import create_engine, text, insert, MetaData
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import OperationalError, IntegrityError
+from datetime import datetime
 import time
 import toml
 
 def connessione():
     """
-    Esegue la connessione al database SQLite specificato nel file secrets.toml
+    Esegue la connessione al database SQLite specificato nel file DBloc.toml
     e restituisce un oggetto Session per l'interazione con il database.
 
     Se la connessione non riesce dopo 3 tentativi, restituisce None.
     """
 
-    toml_data = toml.load(".loc/DBloc.toml")
+    toml_data = toml.load("C:/Users/alber/Documents/PROG/SQlite/.loc/DBloc.toml")
     database = toml_data["sqlite"]["database"]
 
     connection_string = f"sqlite:///{database}"
@@ -44,7 +45,7 @@ def create_database():
     """
     Crea il database se non esiste già.
     """
-    toml_data = toml.load("C:/Users/alber/Desktop/SQlite/Location/DBloc.toml")
+    toml_data = toml.load(".loc/DBloc.toml")
     database = toml_data["sqlite"]["database"]
 
     connection_string = f"sqlite:///{database}"
@@ -77,28 +78,30 @@ def create_tableSQL(session, nome_tabella, definizione):
 
 def init_tables(session):
     """
-    Inizializza le tabelle del database.
+    Tabelle da inizializzare del database.
     """
     tabelle = {
         "Attivita": """
-            ID_Attivita INTEGER PRIMARY KEY AUTOINCREMENT,
-            Nome TEXT NOT NULL
+            ID_Attivita INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
+            Nome TEXT NOT NULL,
+            Descrizione TEXT
         """,
         "Scadenziario": """
-            ID_Scadenziario INTEGER PRIMARY KEY AUTOINCREMENT,
+            ID_Scadenziario INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
             ID_Attivita INTEGER NOT NULL,
             DataSchedulazione TEXT NOT NULL CHECK(datetime(DataSchedulazione) IS NOT NULL),
             DataEsecuzione TEXT CHECK(datetime(DataEsecuzione) IS NOT NULL OR DataEsecuzione IS NULL),
-            DataScadenza TEXT NOT NULL CHECK(datetime(DataScadenza) IS NOT NULL),            
+            DataScadenza TEXT NOT NULL CHECK(datetime(DataScadenza) IS NOT NULL),
             Tipo TEXT NOT NULL CHECK(Tipo IN ('Ordinaria', 'Straordinaria', 'Urgente')),
             Stato TEXT DEFAULT 'Programmata' CHECK(Stato IN ('Programmata', 'Completata', 'Annullata')),
             Note TEXT,
             FOREIGN KEY (ID_Attivita) REFERENCES Attivita(ID_Attivita) ON DELETE CASCADE
         """,
-        "Allarmi": """
-            ID_Allarme INTEGER PRIMARY KEY AUTOINCREMENT,
+        "Notifica": """
+            ID_Notifica INTEGER PRIMARY KEY AUTOINCREMEN NOT NULL UNIQUE,
             ID_Scadenziario INTEGER NOT NULL,
-            DataAllarme TEXT NOT NULL CHECK(datetime(DataAllarme) IS NOT NULL),
+            DataNotifica TEXT NOT NULL CHECK(datetime(DataNotifica) IS NOT NULL),
+            Tipo TEXT NOT NULL CHECK(Tipo IN ('Avviso', 'Allarme')),
             Stato TEXT DEFAULT 'Attivo' CHECK(Stato IN ('Attivo', 'Disattivato')),
             Messaggio TEXT,
             FOREIGN KEY (ID_Scadenziario) REFERENCES Scadenziario(ID_Scadenziario) ON DELETE CASCADE
@@ -107,6 +110,8 @@ def init_tables(session):
     }
     for nome_tabella, definizione in tabelle.items():
         create_tableSQL(session, nome_tabella, definizione)
+
+
 
 def initSQL():
     """
@@ -147,7 +152,7 @@ def add_recordSQL(session, nome_tabella, dati):
             print(f"Errore: La tabella {nome_tabella} non esiste.")
             return False
 
-        with session.begin():
+        with session.begin_nested():
             session.execute(text("PRAGMA foreign_keys = ON"))
             colonne = ", ".join(key for key in dati.keys())
             valori = ", ".join(f":{key}" for key in dati.keys())
@@ -217,6 +222,197 @@ def select_recordsSQL(session, nome_tabella, colonne="*", condizione=None, args=
         print(f"Errore durante la selezione: {e}")
         return False
 
+def add_attività_e_scadenziario():
+    """
+    Aggiunge un'attività e uno scadenziario collegato.
+    """
+    try:
+        # Inserimento dati per l'attività
+        print("Inserisci i dati per la nuova attività:")
+        nome_attivita = input("Nome attività: ")
+        descrizione_attivita = input("Descrizione attività (opzionale): ")
+
+        attivita_data = {
+            "Nome": nome_attivita,
+            "Descrizione": descrizione_attivita if descrizione_attivita else None
+        }
+
+        # Connessione al database
+        session = connessione()
+        if not session:
+            print("Errore di connessione al database.")
+            return
+
+        try:
+            # Aggiunta dell'attività
+            success = add_recordSQL(session, "Attivita", attivita_data)
+            if not success:
+                print("Errore nell'aggiunta dell'attività.")
+                return
+
+            # Recupero dell'ID dell'attività appena aggiunta
+            attivita_id = session.execute(text("SELECT last_insert_rowid()")).scalar()
+
+            # Inserimento dati per lo scadenziario
+            print("Inserisci i dati per il nuovo scadenziario collegato all'attività:")
+            data_schedulazione = datetime.now().strftime("%Y-%m-%d")
+            data_esecuzione = input("Data esecuzione (YYYY-MM-DD, opzionale): ")
+            data_scadenza = input("Data scadenza (YYYY-MM-DD): ")
+            tipo = input("Tipo (Ordinaria, Straordinaria, Urgente): ")
+            note = input("Note (opzionale): ")
+
+            scadenziario_data = {
+                "ID_Attivita": attivita_id,
+                "DataSchedulazione": data_schedulazione,
+                "DataEsecuzione": data_esecuzione if data_esecuzione else None,
+                "DataScadenza": data_scadenza,
+                "Tipo": tipo,
+                "Stato": 'Programmata',
+                "Note": note if note else None
+            }
+
+            # Aggiunta dello scadenziario
+            success = add_recordSQL(session, "Scadenziario", scadenziario_data)
+            if success:
+                print("Attività e scadenziario aggiunti con successo.")
+            else:
+                print("Errore nell'aggiunta dello scadenziario.")
+        finally:
+            session.close()
+    except Exception as e:
+        print(f"Errore imprevisto: {e}")
+
+def select_attività_e_update_scadenziario():
+    """
+    Seleziona un'attività, stampa i dettagli dello scadenziario e chiede se si desidera aggiornare lo stato in "Completata" o "Annullata".
+    Se lo stato viene aggiornato in "Completata", la data di esecuzione verrà aggiornata con la data corrente.
+    """
+    try:
+        with connessione() as session:
+            if not session:
+                print("Errore di connessione al database.")
+                return
+
+            # Seleziona tutte le attività
+            attivita = select_recordsSQL(session, "Attivita")
+            if not attivita:
+                print("Nessuna attività trovata.")
+                return
+
+            # Stampa le attività trovate
+            print("Attività trovate:")
+            for idx, att in enumerate(attivita, start=1):
+                print(f"{idx}. ID: {att['ID_Attivita']}, Nome: {att['Nome']}, Descrizione: {att['Descrizione']}")
+
+            # Chiede all'utente di selezionare un'attività
+            scelta = int(input("Seleziona l'ID dell'attività: "))
+            attivita_scelta = next((att for att in attivita if att['ID_Attivita'] == scelta), None)
+
+            if not attivita_scelta:
+                print("Attività non trovata.")
+                return
+
+            # Seleziona gli scadenziari collegati all'attività scelta
+            scadenziari = select_recordsSQL(session, "Scadenziario", condizione="ID_Attivita = :id", args={"id": attivita_scelta['ID_Attivita']})
+            if not scadenziari:
+                print("Nessuno scadenziario trovato per l'attività selezionata.")
+                return
+
+            # Stampa i dettagli degli scadenziari trovati
+            print("Scadenziari trovati:")
+            for idx, scad in enumerate(scadenziari, start=1):
+                print(f"{idx}. ID: {scad['ID_Scadenziario']}, DataSchedulazione: {scad['DataSchedulazione']}, DataScadenza: {scad['DataScadenza']}, Tipo: {scad['Tipo']}, Stato: {scad['Stato']}, Note: {scad['Note']}")
+
+            # Chiede all'utente di selezionare uno scadenziario
+            scelta_scadenziario = int(input("Seleziona l'ID dello scadenziario da aggiornare: "))
+            scadenziario_scelto = next((scad for scad in scadenziari if scad['ID_Scadenziario'] == scelta_scadenziario), None)
+
+            if not scadenziario_scelto:
+                print("Scadenziario non trovato.")
+                return
+
+            # Stampa i dettagli dello scadenziario selezionato
+            print(f"Dettagli dello scadenziario selezionato: ID: {scadenziario_scelto['ID_Scadenziario']}, DataSchedulazione: {scadenziario_scelto['DataSchedulazione']}, DataScadenza: {scadenziario_scelto['DataScadenza']}, Tipo: {scadenziario_scelto['Tipo']}, Stato: {scadenziario_scelto['Stato']}, Note: {scadenziario_scelto['Note']}")
+
+            # Chiede se si desidera aggiornare lo stato
+            nuovo_stato = input("Vuoi aggiornare lo stato in 'Completata' o 'Annullata'? (C/A): ").strip().upper()
+            if nuovo_stato not in ['C', 'A']:
+                print("Scelta non valida.")
+                return
+
+            stato = "Completata" if nuovo_stato == 'C' else "Annullata"
+            data_esecuzione = datetime.now().strftime("%Y-%m-%d") if stato == "Completata" else None
+
+            # Aggiorna lo stato dello scadenziario
+            update_data = {"Stato": stato}
+            if data_esecuzione:
+                update_data["DataEsecuzione"] = data_esecuzione
+
+            condizione = "ID_Scadenziario = :id"
+            args = {"id": scadenziario_scelto['ID_Scadenziario']}
+
+            rows_updated = update_recordSQL(session, "Scadenziario", update_data, condizione, args)
+            if rows_updated:
+                print(f"Stato dello scadenziario aggiornato con successo a '{stato}'.")
+            else:
+                print("Errore durante l'aggiornamento dello stato dello scadenziario.")
+    except Exception as e:
+        print(f"Errore imprevisto: {e}")
+
+def invia_notifica_scadenziari():
+    """
+    Invia una notifica di avviso o allarme se uno o più scadenziari con stato "Programmata"
+    hanno una data di scadenza vicina oppure scaduta. Crea un record nella tabella Notifica.
+    """
+    try:
+        with connessione() as session:
+            if not session:
+                print("Errore di connessione al database.")
+                return
+
+            # Seleziona tutti gli scadenziari con stato "Programmata"
+            scadenziari = select_recordsSQL(session, "Scadenziario", condizione="Stato = 'Programmata'")
+            if not scadenziari:
+                print("Nessuno scadenziario trovato con stato 'Programmata'.")
+                return
+
+            data_corrente = datetime.now().strftime("%Y-%m-%d")
+            notifiche_inviate = 0
+
+            for scadenziario in scadenziari:
+                data_scadenza = scadenziario['DataScadenza']
+                giorni_rimanenti = (datetime.strptime(data_scadenza, "%Y-%m-%d") - datetime.strptime(data_corrente, "%Y-%m-%d")).days
+
+                if giorni_rimanenti <= 0:
+                    tipo_notifica = 'Allarme'
+                    messaggio = f"Lo scadenziario ID {scadenziario['ID_Scadenziario']} è scaduto."
+                elif giorni_rimanenti <= 7:
+                    tipo_notifica = 'Avviso'
+                    messaggio = f"Lo scadenziario ID {scadenziario['ID_Scadenziario']} scadrà tra {giorni_rimanenti} giorni."
+                else:
+                    continue
+
+                notifica_data = {
+                    "ID_Scadenziario": scadenziario['ID_Scadenziario'],
+                    "DataNotifica": data_corrente,
+                    "Tipo": tipo_notifica,
+                    "Stato": 'Attivo',
+                    "Messaggio": messaggio
+                }
+
+                # Aggiunta della notifica
+                success = add_recordSQL(session, "Notifica", notifica_data)
+                if success:
+                    notifiche_inviate += 1
+                    print(f"Notifica di tipo '{tipo_notifica}' inviata per lo scadenziario ID {scadenziario['ID_Scadenziario']}. Messaggio: {messaggio}")
+
+            if notifiche_inviate == 0:
+                print("Nessuna notifica inviata.")
+            else:
+                print(f"Totale notifiche inviate: {notifiche_inviate}")
+
+    except Exception as e:
+        print(f"Errore imprevisto: {e}")
 
 
 def Test_menu():
@@ -228,7 +424,10 @@ def Test_menu():
         print("4. Aggiorna record")
         print("5. Elimina record")
         print("6. Seleziona record")
-        print("7. Esci")
+        print("7. Aggiungi attività e scadenziario")
+        print("8. Seleziona e aggiorna attività")
+        print("9. Invia notifica scadenziari")
+        print("10. Esci")
 
         choice = input("Inserisci la tua scelta: ")
 
@@ -333,6 +532,12 @@ def Test_menu():
                     else:
                         print("Nessun risultato trovato.")
             elif choice == '7':
+                add_attività_e_scadenziario()
+            elif choice == '8':
+                select_attività_e_update_scadenziario()
+            elif choice == '9':
+                invia_notifica_scadenziari()
+            elif choice == '10':
                 print("Uscita dal programma. Arrivederci")
                 break
             else:
