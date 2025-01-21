@@ -130,7 +130,7 @@ VBoxManage guestcontrol ISP run --username root --password root --wait-stdout --
 VBoxManage guestcontrol ISP run --username root --password root --wait-stdout --exe /sbin/ip -- route add 145.18.8.0/25 via 10.0.2.1
 VBoxManage guestcontrol ISP run --username root --password root --wait-stdout --exe /sbin/ip -- route add default via 2.2.2.1
 
-echo Test ping A -> Z
+echo Test ping A - Z
 VBoxManage guestcontrol A run --username root --password root --wait-stdout --exe /bin/ping -- -c 4 2.2.2.1
 
 echo Spegnimento macchine virtuali
