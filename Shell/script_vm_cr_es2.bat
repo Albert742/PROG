@@ -59,3 +59,4 @@ VBoxManage modifyvm R2 --memory 256 --nic1 intnet --intnet1 lanExt2 --nic2 intne
 
 VBoxManage clonevm debbie --snapshot Snapshot --name R3 --options link --register
 VBoxManage modifyvm R3 --memory 256 --nic1 intnet --intnet1 lan2_3 --nic2 intnet --intnet2 lan13 --nic3 intnet --intnet3 lan12 --nic4 intnet --intnet4 lan1_3 
+
