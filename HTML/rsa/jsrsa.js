@@ -1,4 +1,4 @@
-const MAX_VALUE = 65535;
+const MAX_VALUE = 255;
 const E_VALUE = 3;
 
 let publicKey = { n: null, e: E_VALUE };
@@ -25,30 +25,6 @@ function ifprime(n) {
         if (n % i === 0) return false;
     }
     return true;
-}
-
-function modpow(base, power, mod) {
-    let result = 1;
-    for (let i = 0; i < power; i++) {
-        result = (result * base) % mod;
-    }
-    return result;
-}
-
-function inverse(a, mod) {
-    let aprev = mod, iprev = mod, i = 1, atemp, itemp;
-
-    while (a !== 1) {
-        atemp = a;
-        itemp = i;
-        a = aprev - Math.floor(aprev / atemp) * a;
-        i = iprev - Math.floor(aprev / atemp) * i;
-        aprev = atemp;
-        iprev = itemp;
-        while (i < 0) i += mod;
-    }
-
-    return i;
 }
 
 function gcd(a, b) {
@@ -79,6 +55,35 @@ function setprimes(e) {
     return { p, q, n, phi };
 }
 
+function modpow(base, exp, mod) {
+    let result = 1;
+    base = base % mod;
+    while (exp > 0) {
+        if (exp % 2 == 1) {
+            result = (result * base) % mod;
+        }
+        exp = Math.floor(exp / 2);
+        base = (base * base) % mod;
+    }
+    return result;
+}
+
+function inverse(a, mod) {
+    let aprev = mod, iprev = mod, i = 1, atemp, itemp;
+
+    while (a !== 1) {
+        atemp = a;
+        itemp = i;
+        a = aprev - Math.floor(aprev / atemp) * a;
+        i = iprev - Math.floor(aprev / atemp) * i;
+        aprev = atemp;
+        iprev = itemp;
+        while (i < 0) i += mod;
+    }
+
+    return i;
+}
+
 function generateKeys() {
     const e = E_VALUE;
     const { p, q, n, phi } = setprimes(e);
@@ -97,27 +102,43 @@ function generateKeys() {
 }
 
 function encryptText() {
-    const plaintext = document.getElementById('plaintext').value;
-    const { n, e } = publicKey;
+    const { n, e } = publicKey; // Usa la chiave pubblica per la crittografia
+    const plaintext = document.getElementById('plaintext').value; // Corretto l'ID dell'elemento
     let ciphertext = '';
 
     for (let i = 0; i < plaintext.length; i++) {
-        const c = modpow(plaintext.charCodeAt(i), e, n);
-        ciphertext += c + ' ';
+        const m = plaintext.charCodeAt(i);
+        const c = modpow(m, e, n);
+        ciphertext += c.toString() + ' ';
     }
+
+    console.log(`Testo plain: ${plaintext}`);
+    console.log(`Testo cifrato: ${ciphertext.trim()}`);
 
     document.getElementById('ciphertext').innerText = 'Testo crittografato: ' + ciphertext.trim();
 }
 
 function decryptText() {
     const ciphertext = document.getElementById('ciphertextInput').value.split(' ');
-    const { n, d } = privateKey;
+    const { d, p, q } = privateKey;
     let decryptedText = '';
-
+    
+    const dP = d % (p - 1);
+    const dQ = d % (q - 1);
+    const qInv = inverse(q, p);
+    
     for (let i = 0; i < ciphertext.length; i++) {
-        const m = modpow(parseInt(ciphertext[i]), d, n);
+        const c = parseInt(ciphertext[i]);
+        const m1 = modpow(c, dP, p);
+        const m2 = modpow(c, dQ, q);
+        let m1m2 = m1 - m2;
+        if (m1m2 < 0) m1m2 += p;
+        const h = (qInv * m1m2) % p;
+        const m = m2 + h * q;
         decryptedText += String.fromCharCode(m);
     }
-
+    
+    console.log(`Testo decriptato: ${decryptedText}`);
+    
     document.getElementById('decryptedText').innerText = 'Testo decrittografato: ' + decryptedText;
 }
