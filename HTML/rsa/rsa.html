@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>RSA</title>
+    <script src="jsrsa.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f0f0f0;
+        }
+        .container {
+            width: auto;
+            justify-content: center;
+        }
+        div {
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 30%;
+        }
+        h2 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+        button {
+            margin-bottom: 10px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        input {
+            margin-bottom: 10px;
+            padding: 10px;
+            width: calc(100% - 22px);
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        p {
+            margin: 0;
+            padding: 10px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+        }
+        @media (max-width: 770px) {
+            .container {
+                align-items: center;
+            }
+            div {
+                width: auto;
+            }
+        }
+        @media (max-width: 480px) {
+            div {
+                width: 70%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>RSA</h1>
+        <div>
+            <h2>Genera Chiavi</h2>
+            <button onclick="generateKeys()">Genera Chiavi</button>
+            <p id="publicKey"></p>
+            <p id="privateKey"></p>
+        </div>
+        <div>
+            <h2>Crittografa</h2>
+            <input type="text" id="plaintext" placeholder="Inserisci testo da crittografare">
+            <button onclick="encryptText()">Crittografa</button>
+            <p id="ciphertext"></p>
+        </div>
+        <div>
+            <h2>Decrittografa</h2>
+            <input type="text" id="ciphertextInput" placeholder="Inserisci testo da decrittografare">
+            <button onclick="decryptText()">Decrittografa</button>
+            <p id="decryptedText"></p>
+        </div>
+    </div>
+</body>
+</html>
