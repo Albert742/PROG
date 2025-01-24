@@ -156,6 +156,18 @@ VBoxManage guestcontrol ISP run --username root --password root --wait-stdout --
 VBoxManage guestcontrol ISP run --username root --password root --wait-stdout --exe /sbin/ip -- link set enp0s9 up
 VBoxManage guestcontrol ISP run --username root --password root --wait-stdout --exe /sbin/ip -- route add 145.18.8.0/25 via 145.18.8.109 dev enp0s3
 
+echo Test ping R1 - R2 
+VBoxManage guestcontrol R1 run --username root --password root --wait-stdout --exe /bin/ping -- -c 4 145.18.8.98
+
+echo Test ping R1 - R3
+VBoxManage guestcontrol R1 run --username root --password root --wait-stdout --exe /bin/ping -- -c 4 145.18.8.102
+
+echo Test ping R1 - ISP
+VBoxManage guestcontrol R1 run --username root --password root --wait-stdout --exe /bin/ping -- -c 4 145.18.8.110
+
+echo Test ping R2 - R3
+VBoxManage guestcontrol R2 run --username root --password root --wait-stdout --exe /bin/ping -- -c 4 145.18.8.106
+
 echo Test ping A - D
 VBoxManage guestcontrol A run --username root --password root --wait-stdout --exe /bin/ping -- -c 4 145.18.8.62
 
