@@ -1,15 +1,19 @@
 INDIRIZZI ASSEGNATI: 145.18.8.0/25
 
-da suddividere in:
-lan11 = 28 indirizzi -- /27 B(x.x.x.30/27) - R1(x.x.x.1/27)
-lan13 = 16 indirizzi -- /27 D(x.x.x.62/27) - R3(x.x.x.33/27)
-lan10 = 13 indirizzi -- /28 A(x.x.x.78/28) - R1(x.x.x.65/28)
-lan12 = 4 indirizzi -- /29 C(x.x.x.86/29) - R3(x.x.x.81/29)
-lan14 = 5 indirizzi -- /29 E(x.x.x.94/29) - R2(x.x.x.89/29)
+indirizzi lan hosts a router:
+lan11 = 28 indirizzi -- /27 R1(145.18.8.1/27) - B(145.18.8.30/27)
+lan13 = 16 indirizzi -- /27 R3(145.18.8.33/27) - D(145.18.8.62/27)
+lan10 = 13 indirizzi -- /28 R1(145.18.8.65/28) - A(145.18.8.78/28)
+lan14 = 5 indirizzi -- /29 R2(145.18.8.81/29) - E(145.18.8.86/29)
+lan12 = 4 indirizzi -- /29 R3(145.18.8.89/29) - C(145.18.8.94/29)
 
-indirizzi privati per router
-lan1_2 = punto punto -- 10.0.12.0/31 R1(x.x.x.0/31) - R2(x.x.x.1/31)
-lan1_3 = punto punto -- 10.0.13.0/31 R1(x.x.x.0/31) - R3(x.x.x.1/31)
-lan2_3 = punto punto -- 10.0.23.0/31 R2(x.x.x.0/31) - R3(x.x.x.1/31)
-lanExt1 = punto punto -- 10.0.1.0/31 R1(x.x.x.1/31) - ISP(x.x.x.0/31)
-lanExt2 = punto punto -- 10.0.2.0/31 R2(x.x.x.1/31) - ISP(x.x.x.0/31)
+
+indirizzi per router a router:
+lan1_2 = R1(145.18.8.97/30) - R2(145.18.8.98/30)
+lan1_3 = R1(145.18.8.101/30) - R3(145.18.8.102/30)
+lan2_3 = R2(145.18.8.105/30) - R3(145.18.8.106/30)
+lanExt1 = R1(145.18.8.109/30) - ISP(145.18.8.110/30)
+lanExt2 = R2(145.18.8.113/30) - ISP(145.18.8.114/30)
+
+indirizzi lan esterna a interna:
+lanISP = Z(2.2.2.1/30) - ISP(2.2.2.2/30)
