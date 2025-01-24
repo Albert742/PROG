@@ -11,7 +11,7 @@ VBoxManage startvm "R2"
 VBoxManage startvm "R1" 
 VBoxManage startvm "ISP" 
 
-timeout /t 30 /nobreak > nul
+timeout /t 15 /nobreak > nul
 
 echo Configurazione nodo A
 VBoxManage guestcontrol A run --username root --password root --wait-stdout --exe /usr/bin/hostname -- A
@@ -64,6 +64,9 @@ VBoxManage guestcontrol Z run --username root --password root --wait-stdout --ex
 
 echo Configurazione router R1
 VBoxManage guestcontrol R1 run --username root --password root --wait-stdout --exe /usr/bin/hostname -- R1
+VBoxManage guestcontrol R1 run --username root --password root --wait-stdout --exe /sbin/ip -- link set enp0s8 up
+VBoxManage guestcontrol R1 run --username root --password root --wait-stdout --exe /sbin/ip -- link set enp0s9 up
+VBoxManage guestcontrol R1 run --username root --password root --wait-stdout --exe /sbin/ip -- link set enp0s10 up
 
 :: lan1_3
 VBoxManage guestcontrol R1 run --username root --password root --wait-stdout --exe /sbin/ip -- addr add 145.18.8.101/30 dev enp0s3
@@ -77,22 +80,16 @@ VBoxManage guestcontrol R1 run --username root --password root --wait-stdout --e
 :: lanExt1
 VBoxManage guestcontrol R1 run --username root --password root --wait-stdout --exe /sbin/ip -- addr add 145.18.8.109/30 dev enp0s10
 
-:: lan1_2
-VBoxManage guestcontrol R1 run --username root --password root --wait-stdout --exe /sbin/ip -- addr add 145.18.8.97/30 dev enp0s16
-
+VBoxManage guestcontrol R1 run --username root --password root --wait-stdout --exe /sbin/ip -- addr
 VBoxManage guestcontrol R1 run --username root --password root --wait-stdout --exe /usr/sbin/sysctl -- -w net.ipv4.ip_forward=1
-VBoxManage guestcontrol R1 run --username root --password root --wait-stdout --exe /sbin/ip -- link set enp0s8 up
-VBoxManage guestcontrol R1 run --username root --password root --wait-stdout --exe /sbin/ip -- link set enp0s9 up
-VBoxManage guestcontrol R1 run --username root --password root --wait-stdout --exe /sbin/ip -- link set enp0s10 up
-VBoxManage guestcontrol R1 run --username root --password root --wait-stdout --exe /sbin/ip -- link set enp0s16 up
 VBoxManage guestcontrol R1 run --username root --password root --wait-stdout --exe /sbin/ip -- route add 145.18.8.88/29 via 145.18.8.102 dev enp0s3
 VBoxManage guestcontrol R1 run --username root --password root --wait-stdout --exe /sbin/ip -- route add 145.18.8.32/27 via 145.18.8.102 dev enp0s3
-VBoxManage guestcontrol R1 run --username root --password root --wait-stdout --exe /sbin/ip -- route add 145.18.8.80/29 via 145.18.8.98 dev enp0s16
-VBoxManage guestcontrol R1 run --username root --password root --wait-stdout --exe /sbin/ip -- route add 2.2.2.0/30 via 145.18.8.110 dev enp0s10
+VBoxManage guestcontrol R1 run --username root --password root --wait-stdout --exe /sbin/ip -- route add default via 145.18.8.110
 
 echo Configurazione router R2
 VBoxManage guestcontrol R2 run --username root --password root --wait-stdout --exe /usr/bin/hostname -- R2
-
+VBoxManage guestcontrol R2 run --username root --password root --wait-stdout --exe /sbin/ip -- link set enp0s8 up
+VBoxManage guestcontrol R2 run --username root --password root --wait-stdout --exe /sbin/ip -- link set enp0s9 up
 :: lanExt2
 VBoxManage guestcontrol R2 run --username root --password root --wait-stdout --exe /sbin/ip -- addr add 145.18.8.113/30 dev enp0s3 
 
@@ -102,21 +99,17 @@ VBoxManage guestcontrol R2 run --username root --password root --wait-stdout --e
 :: lan2_3
 VBoxManage guestcontrol R2 run --username root --password root --wait-stdout --exe /sbin/ip -- addr add 145.18.8.105/30 dev enp0s9 
 
-:: lan1_2
-VBoxManage guestcontrol R2 run --username root --password root --wait-stdout --exe /sbin/ip -- addr add 145.18.8.98/30 dev enp0s10 
-
+VBoxManage guestcontrol R2 run --username root --password root --wait-stdout --exe /sbin/ip -- addr
 VBoxManage guestcontrol R2 run --username root --password root --wait-stdout --exe /usr/sbin/sysctl -- -w net.ipv4.ip_forward=1
-VBoxManage guestcontrol R2 run --username root --password root --wait-stdout --exe /sbin/ip -- link set enp0s8 up
-VBoxManage guestcontrol R2 run --username root --password root --wait-stdout --exe /sbin/ip -- link set enp0s9 up
-VBoxManage guestcontrol R2 run --username root --password root --wait-stdout --exe /sbin/ip -- link set enp0s10 up
-VBoxManage guestcontrol R2 run --username root --password root --wait-stdout --exe /sbin/ip -- route add 145.18.8.0/21 via 145.18.8.97 dev enp0s8
-VBoxManage guestcontrol R2 run --username root --password root --wait-stdout --exe /sbin/ip -- route add 145.18.8.64/28 via 145.18.8.97 dev enp0s10
-VBoxManage guestcontrol R1 run --username root --password root --wait-stdout --exe /sbin/ip -- route add 145.18.8.88/29 via 145.18.8.106 dev enp0s9
-VBoxManage guestcontrol R1 run --username root --password root --wait-stdout --exe /sbin/ip -- route add 145.18.8.32/27 via 145.18.8.106 dev enp0s9
-VBoxManage guestcontrol R2 run --username root --password root --wait-stdout --exe /sbin/ip -- route add 2.2.2.0/30 via 145.18.8.114 dev enp0s3
+VBoxManage guestcontrol R2 run --username root --password root --wait-stdout --exe /sbin/ip -- route add 145.18.8.88/29 via 145.18.8.106 dev enp0s9
+VBoxManage guestcontrol R2 run --username root --password root --wait-stdout --exe /sbin/ip -- route add 145.18.8.32/27 via 145.18.8.106 dev enp0s9
+VBoxManage guestcontrol R2 run --username root --password root --wait-stdout --exe /sbin/ip -- route add default via 145.18.8.114
 
 echo Configurazione router R3
 VBoxManage guestcontrol R3 run --username root --password root --wait-stdout --exe /usr/bin/hostname -- R3
+VBoxManage guestcontrol R3 run --username root --password root --wait-stdout --exe /sbin/ip -- link set enp0s8 up
+VBoxManage guestcontrol R3 run --username root --password root --wait-stdout --exe /sbin/ip -- link set enp0s9 up
+VBoxManage guestcontrol R3 run --username root --password root --wait-stdout --exe /sbin/ip -- link set enp0s10 up
 
 :: lan2_3
 VBoxManage guestcontrol R3 run --username root --password root --wait-stdout --exe /sbin/ip -- addr add 145.18.8.106/30 dev enp0s3 
@@ -130,17 +123,17 @@ VBoxManage guestcontrol R3 run --username root --password root --wait-stdout --e
 :: lan1_3
 VBoxManage guestcontrol R3 run --username root --password root --wait-stdout --exe /sbin/ip -- addr add 145.18.8.102/30 dev enp0s10 
 
+VBoxManage guestcontrol R3 run --username root --password root --wait-stdout --exe /sbin/ip -- addr
 VBoxManage guestcontrol R3 run --username root --password root --wait-stdout --exe /usr/sbin/sysctl -- -w net.ipv4.ip_forward=1
-VBoxManage guestcontrol R3 run --username root --password root --wait-stdout --exe /sbin/ip -- link set enp0s8 up
-VBoxManage guestcontrol R3 run --username root --password root --wait-stdout --exe /sbin/ip -- link set enp0s9 up
-VBoxManage guestcontrol R3 run --username root --password root --wait-stdout --exe /sbin/ip -- link set enp0s10 up
-VBoxManage guestcontrol R2 run --username root --password root --wait-stdout --exe /sbin/ip -- route add 145.18.8.0/21 via 145.18.8.101 dev enp0s10
-VBoxManage guestcontrol R2 run --username root --password root --wait-stdout --exe /sbin/ip -- route add 145.18.8.64/28 via 145.18.8.101 dev enp0s10
-VBoxManage guestcontrol R1 run --username root --password root --wait-stdout --exe /sbin/ip -- route add 145.18.8.80/29 via 145.18.8.105 dev enp0s3
-VBoxManage guestcontrol R3 run --username root --password root --wait-stdout --exe /sbin/ip -- route add 2.2.2.0/30 via 145.18.8.105 dev enp0s3
+VBoxManage guestcontrol R3 run --username root --password root --wait-stdout --exe /sbin/ip -- route add 145.18.8.0/21 via 145.18.8.101 dev enp0s10
+VBoxManage guestcontrol R3 run --username root --password root --wait-stdout --exe /sbin/ip -- route add 145.18.8.64/28 via 145.18.8.101 dev enp0s10
+VBoxManage guestcontrol R3 run --username root --password root --wait-stdout --exe /sbin/ip -- route add 145.18.8.80/29 via 145.18.8.105 dev enp0s3
+VBoxManage guestcontrol R3 run --username root --password root --wait-stdout --exe /sbin/ip -- route add default via 145.18.8.105
 
 echo Configurazione router ISP
 VBoxManage guestcontrol ISP run --username root --password root --wait-stdout --exe /usr/bin/hostname -- ISP
+VBoxManage guestcontrol ISP run --username root --password root --wait-stdout --exe /sbin/ip -- link set enp0s8 up
+VBoxManage guestcontrol ISP run --username root --password root --wait-stdout --exe /sbin/ip -- link set enp0s9 up
 
 :: lanExt1
 VBoxManage guestcontrol ISP run --username root --password root --wait-stdout --exe /sbin/ip -- addr add 145.18.8.110/30 dev enp0s3 
@@ -151,13 +144,12 @@ VBoxManage guestcontrol ISP run --username root --password root --wait-stdout --
 :: lanISP
 VBoxManage guestcontrol ISP run --username root --password root --wait-stdout --exe /sbin/ip -- addr add 2.2.2.2/30 dev enp0s9 
 
+VBoxManage guestcontrol ISP run --username root --password root --wait-stdout --exe /sbin/ip -- addr
 VBoxManage guestcontrol ISP run --username root --password root --wait-stdout --exe /usr/sbin/sysctl -- -w net.ipv4.ip_forward=1
-VBoxManage guestcontrol ISP run --username root --password root --wait-stdout --exe /sbin/ip -- link set enp0s8 up
-VBoxManage guestcontrol ISP run --username root --password root --wait-stdout --exe /sbin/ip -- link set enp0s9 up
 VBoxManage guestcontrol ISP run --username root --password root --wait-stdout --exe /sbin/ip -- route add 145.18.8.0/25 via 145.18.8.109 dev enp0s3
 
 echo Test ping R1 - R2 
-VBoxManage guestcontrol R1 run --username root --password root --wait-stdout --exe /bin/ping -- -c 4 145.18.8.98
+VBoxManage guestcontrol R1 run --username root --password root --wait-stdout --exe /bin/ping -- -c 4 145.18.8.81
 
 echo Test ping R1 - R3
 VBoxManage guestcontrol R1 run --username root --password root --wait-stdout --exe /bin/ping -- -c 4 145.18.8.102

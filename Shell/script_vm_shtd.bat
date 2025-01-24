@@ -1,3 +1,4 @@
+@echo off
 echo Spegnimento macchine virtuali
 VBoxManage controlvm "A" acpipowerbutton
 VBoxManage controlvm "B" acpipowerbutton
