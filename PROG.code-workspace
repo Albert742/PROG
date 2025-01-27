@@ -13,32 +13,29 @@
 			"path": "Java"
 		},
 		{
-			"name": "Spring",
-			"path": "Spring"
-		},	
+			"path": "SpringBoot"
+		},
 		{
 			"name": "Shell",
 			"path": "Shell"
 		},
 		{
-			"name": "MD",
 			"path": "MD"
 		},
 		{
-			"name": "HTML",
 			"path": "HTML"
 		},
 		{
-			"name": "SQL",
 			"path": "SQL"
 		},
 		{
-			"name": "MongoDB",
 			"path": "MongoDB"
 		},
 		{
-			"name": "SQlite",
 			"path": "SQlite"
+		},
+		{
+			"path": "MariaDB"
 		}
 	],
 	"settings": {
