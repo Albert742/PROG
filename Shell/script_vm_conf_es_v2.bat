@@ -1,4 +1,3 @@
-@echo off
 
 VBoxManage startvm "A" 
 VBoxManage startvm "B" 
@@ -87,6 +86,7 @@ VBoxManage guestcontrol R1 run --username root --password root --wait-stdout --e
 VBoxManage guestcontrol R1 run --username root --password root --wait-stdout --exe /usr/sbin/sysctl -- -w net.ipv4.ip_forward=1
 VBoxManage guestcontrol R1 run --username root --password root --wait-stdout --exe /sbin/ip -- route add 145.18.8.88/29 via 10.0.13.1 dev enp0s3
 VBoxManage guestcontrol R1 run --username root --password root --wait-stdout --exe /sbin/ip -- route add 145.18.8.32/27 via 10.0.13.1 dev enp0s3
+VBoxManage guestcontrol R1 run --username root --password root --wait-stdout --exe /sbin/ip -- route add 145.18.8.80/29 via 10.0.13.1 dev enp0s3
 VBoxManage guestcontrol R1 run --username root --password root --wait-stdout --exe /sbin/ip -- route add default via 10.0.1.0
 
 echo Configurazione router R2
@@ -108,7 +108,9 @@ VBoxManage guestcontrol R2 run --username root --password root --wait-stdout --e
 VBoxManage guestcontrol R2 run --username root --password root --wait-stdout --exe /sbin/ip -- addr
 VBoxManage guestcontrol R2 run --username root --password root --wait-stdout --exe /usr/sbin/sysctl -- -w net.ipv4.ip_forward=1
 VBoxManage guestcontrol R2 run --username root --password root --wait-stdout --exe /sbin/ip -- route add 145.18.8.88/29 via 10.0.23.1 dev enp0s9
-VBoxManage guestcontrol R2 run --username root --password root --wait-stdout --exe /sbin/ip -- route add 145.18.8.32/27 via 10.0.23.0 dev enp0s9
+VBoxManage guestcontrol R2 run --username root --password root --wait-stdout --exe /sbin/ip -- route add 145.18.8.32/27 via 10.0.23.1 dev enp0s9
+VBoxManage guestcontrol R2 run --username root --password root --wait-stdout --exe /sbin/ip -- route add 145.18.8.0/27 via 10.0.23.1 dev enp0s9
+VBoxManage guestcontrol R2 run --username root --password root --wait-stdout --exe /sbin/ip -- route add 145.18.8.64/28 via 10.0.23.1 dev enp0s9
 VBoxManage guestcontrol R2 run --username root --password root --wait-stdout --exe /sbin/ip -- route add default via 10.0.2.0
 
 echo Configurazione router R3
@@ -185,6 +187,41 @@ VBoxManage guestcontrol A run --username root --password root --wait-stdout --ex
 
 echo Test ping A - Z
 VBoxManage guestcontrol A run --username root --password root --wait-stdout --exe /bin/ping -- -c 4 2.2.2.1
+
+echo Test ping B - C
+VBoxManage guestcontrol B run --username root --password root --wait-stdout --exe /bin/ping -- -c 4 145.18.8.94
+
+echo Test ping B - D
+VBoxManage guestcontrol B run --username root --password root --wait-stdout --exe /bin/ping -- -c 4 145.18.8.62
+
+echo Test ping B - E
+VBoxManage guestcontrol B run --username root --password root --wait-stdout --exe /bin/ping -- -c 4 145.18.8.86
+
+echo Test ping B - Z
+VBoxManage guestcontrol B run --username root --password root --wait-stdout --exe /bin/ping -- -c 4 2.2.2.1
+
+echo Test ping C - E
+VBoxManage guestcontrol C run --username root --password root --wait-stdout --exe /bin/ping -- -c 4 145.18.8.86
+
+echo Test ping C - B
+VBoxManage guestcontrol C run --username root --password root --wait-stdout --exe /bin/ping -- -c 4 145.18.8.30
+
+echo Test ping C - Z
+VBoxManage guestcontrol C run --username root --password root --wait-stdout --exe /bin/ping -- -c 4 2.2.2.1
+
+echo Test ping D - E
+VBoxManage guestcontrol D run --username root --password root --wait-stdout --exe /bin/ping -- -c 4 145.18.8.86
+
+echo Test ping D - Z
+VBoxManage guestcontrol D run --username root --password root --wait-stdout --exe /bin/ping -- -c 4 2.2.2.1
+
+echo Test ping E - Z
+VBoxManage guestcontrol E run --username root --password root --wait-stdout --exe /bin/ping -- -c 4 2.2.2.1
+
+echo Test ping E - D
+VBoxManage guestcontrol E run --username root --password root --wait-stdout --exe /bin/ping -- -c 4 145.18.8.62
+
+
 
 echo Script completo
 
