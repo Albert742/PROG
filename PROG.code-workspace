@@ -13,28 +13,31 @@
 			"path": "Java"
 		},
 		{
+			"name": "Spring",
+			"path": "Spring"
+		},	
+		{
 			"name": "Shell",
 			"path": "Shell"
 		},
 		{
-			"path": "Spring"
-		},
-		{
-			"path": "SQL"
-		},
-		{
-			"path": "HTML"
-		},
-		{
+			"name": "MD",
 			"path": "MD"
 		},
 		{
+			"name": "HTML",
+			"path": "HTML"
+		},
+		{
+			"name": "SQL",
+			"path": "SQL"
+		},
+		{
+			"name": "MongoDB",
 			"path": "MongoDB"
 		},
 		{
-			"path": "Progetto Magazzino"
-		},
-		{
+			"name": "SQlite",
 			"path": "SQlite"
 		}
 	],
@@ -43,27 +46,8 @@
 			"stdbool.h": "c",
 			"stdio.h": "c"
 		},
-		"cSpell.words": [
-			"Totti"
-		],
 		"java.compile.nullAnalysis.mode": "automatic",
 		"java.configuration.updateBuildConfiguration": "automatic",
 		"powershell.cwd": "Shell",
-		"sqltools.connections": [
-			{
-				"mysqlOptions": {
-					"authProtocol": "default",
-					"enableSsl": "Disabled"
-				},
-				"previewLimit": 50,
-				"server": "localhost",
-				"port": 3307,
-				"driver": "MariaDB",
-				"name": "MariaDB",
-				"database": "magazzino",
-				"username": "root",
-				"password": "1234"
-			}
-		]
 	}
 }
