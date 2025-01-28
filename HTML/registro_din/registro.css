@@ -1,0 +1,66 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    line-height: 1.6;
+}
+.container {
+    padding: 20px;
+    width: auto;
+}
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.header img {
+    width: auto;
+    height: 60px;
+}
+.subheader {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+.subheader img {
+    width: 140px;
+    height: auto;
+}
+p {
+    text-align: center;
+    width: 100%;
+    font-size: 16pt;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+table, th, td {
+    border: 1px solid #000;
+}
+th, td {
+    padding: 10px;
+    text-align: left;
+}
+td {
+    width: 25%;
+    font-size: 14pt;
+}
+th {
+    font-size: 12pt;
+}
+.footer {
+    margin-top: 10px;
+}
+.footer .info {
+    margin-bottom: 30px;
+}
+.info p {
+    font-size: 13pt;
+    text-align: left;
+}
+.firma {
+    display: flex;
+    justify-content: space-around;
+}
