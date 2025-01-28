@@ -5,6 +5,7 @@ VBoxManage unregistervm "B" --delete
 VBoxManage unregistervm "C" --delete
 VBoxManage unregistervm "D" --delete
 VBoxManage unregistervm "E" --delete
+VBoxManage unregistervm "F" --delete
 VBoxManage unregistervm "Z" --delete
 VBoxManage unregistervm "ISP" --delete
 VBoxManage unregistervm "R1" --delete
