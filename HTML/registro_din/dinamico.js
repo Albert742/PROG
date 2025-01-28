@@ -30,12 +30,12 @@ mainParagraph.innerHTML = 'REGISTRO AULA n. <b>2</b>';
 const table = document.createElement("table");
 const rows = [
     ["Beneficiario", "Ciao"],
-    ["Titolo Progetto", ""],
-    ["CUP", ""],
-    ["Sede del corso", ""],
-    ["Data di inizio", ""],
-    ["Data di conclusione", ""],
-    ["Numero ore d'aula", ""]
+    ["Titolo Progetto", "Come"],
+    ["CUP", "Stai?"],
+    ["Sede del corso", "Io"],
+    ["Data di inizio", "Sto"],
+    ["Data di conclusione", "Bene"],
+    ["Numero ore d'aula", "Danke"]
 ];
 rows.forEach(rowData => {
     const row = document.createElement("tr");
@@ -101,7 +101,7 @@ container.style.backgroundColor = "rgb(243, 10, 10)";
 // Modifica la posizione delle immagini nella header
 logo1.style.order = 2; // Sposta la prima immagine a destra
 logo2.style.order = 1; // Sposta la seconda immagine a sinistra
-logo1.style.width = "100px"; // Cambia la larghezza dell'immagine
+logo1.style.width = "300px"; // Cambia la larghezza dell'immagine
 logo1.style.height = "auto"; // Mantiene l'aspetto proporzionale
 logo2.style.width = "100px"; // Cambia la larghezza dell'immagine
 logo2.style.height = "auto"; // Mantiene l'aspetto proporzionale
@@ -141,12 +141,18 @@ tableCells.forEach(cell => {
 footer.style.backgroundColor = "rgb(68, 44, 44)"; // Cambia il colore di sfondo del footer
 footer.style.padding = "20px"; // Cambia il padding del footer
 
+info.style.border = "1px solid rgb(0, 119, 255)"; // Aggiunge un bordo alla sezione info
+info.style.color = "rgb(0, 255, 85)"; // Cambia il colore del testo della sezione info
+info.style.padding = "10px"; // Cambia il padding della sezione info
+
 // Modifica il testo e lo stile dei paragrafi nella sezione footer
 const footerParagraphs = document.querySelectorAll(".footer .firma p");
 footerParagraphs.forEach(paragraph => {
     paragraph.style.fontStyle = "italic"; // Cambia lo stile del testo in corsivo
     paragraph.style.color = "rgba(0, 255, 170, 0.4)"; // Cambia il colore del testo
 });
+
+
 
 // Modifica lo stile delle firme nel footer
 const firmaDivs = document.querySelectorAll(".firma div");
