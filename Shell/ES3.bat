@@ -93,7 +93,7 @@ VBoxManage guestcontrol R2 run --username root --password root --wait-stdout --e
 VBoxManage guestcontrol R2 run --username root --password root --wait-stdout --exe /sbin/ip -- link set enp0s10 up
 VBoxManage guestcontrol R2 run --username root --password root --wait-stdout --exe /sbin/ip -- addr
 VBoxManage guestcontrol R2 run --username root --password root --wait-stdout --exe /sbin/ip -- route add 15.4.74.0/23 via 10.0.12.0 dev enp0s3
-VBoxManage guestcontrol R2 run --username root --password root --wait-stdout --exe /sbin/ip -- route add 15.4.74.0/24 via 10.0.12.0 dev enp0s3
+VBoxManage guestcontrol R2 run --username root --password root --wait-stdout --exe /sbin/ip -- route add 15.4.76.0/24 via 10.0.12.0 dev enp0s3
 VBoxManage guestcontrol R2 run --username root --password root --wait-stdout --exe /sbin/ip -- route add 15.4.72.0/23 via 10.0.23.1 dev enp0s10
 VBoxManage guestcontrol R2 run --username root --password root --wait-stdout --exe /sbin/ip -- route add 15.4.78.0/26 via 10.0.23.1 dev enp0s10
 VBoxManage guestcontrol R2 run --username root --password root --wait-stdout --exe /sbin/ip -- route add default via 10.0.12.0
