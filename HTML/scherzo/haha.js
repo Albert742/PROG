@@ -6,12 +6,6 @@ function getrolled() {
 
 document.addEventListener('DOMContentLoaded', function() {
     const button = document.getElementById('bottone');
-    const fireworkSounds = [
-        document.getElementById('fireworkSound1'),
-        document.getElementById('fireworkSound2'),
-        document.getElementById('fireworkSound3'),
-        document.getElementById('fireworkSound4')
-    ];
     const alertSound = document.getElementById('alertSound');
     let tries = 0;
     const maxTries = 20;
@@ -43,8 +37,6 @@ document.addEventListener('DOMContentLoaded', function() {
             button.style.top = y + 'px';
             tries++;
         }
-        const soundIndex = Math.floor(Math.random() * fireworkSounds.length);
-        fireworkSounds[soundIndex].play();
         console.log('Tentativi', tries )
     });
 });
