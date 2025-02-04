@@ -29,13 +29,13 @@ mainParagraph.innerHTML = 'REGISTRO AULA n. <b>2</b>';
 // Crea la tabella
 const table = document.createElement("table");
 const rows = [
-    ["Beneficiario", "Ciao"],
-    ["Titolo Progetto", "Come"],
-    ["CUP", "Stai?"],
-    ["Sede del corso", "Io"],
-    ["Data di inizio", "Sto"],
-    ["Data di conclusione", "Bene"],
-    ["Numero ore d'aula", "Danke"]
+    ["Beneficiario", "FONDAZIONE ISTITUTO TECNICO SUPERIORE PER LE TECNOLOGIE DELL'INFORMAZIONE E DELLA COMUNICAZIONE 'STEVE JOBS'"],
+    ["Titolo Progetto", "WEB & CYBER SECURITY"],
+    ["CUP", "E24D23001880006"],
+    ["Sede del corso", "CORSO N. 27 - CATANIA (CT)"],
+    ["Data di inizio", "06/11/2023"],
+    ["Data di conclusione", ""],
+    ["Numero ore d'aula", "1080"]
 ];
 rows.forEach(rowData => {
     const row = document.createElement("tr");
@@ -96,60 +96,67 @@ document.getElementById("root").appendChild(container);
 // Modifica dinamicamente lo stile degli elementi
 
 // Modifica il colore di sfondo del container
-container.style.backgroundColor = "rgb(243, 10, 10)";
+container.style.backgroundColor = "rgb(255, 255, 255)";
 
 // Modifica la posizione delle immagini nella header
-logo1.style.order = 2; // Sposta la prima immagine a destra
-logo2.style.order = 1; // Sposta la seconda immagine a sinistra
-logo1.style.width = "300px"; // Cambia la larghezza dell'immagine
-logo1.style.height = "auto"; // Mantiene l'aspetto proporzionale
-logo2.style.width = "100px"; // Cambia la larghezza dell'immagine
-logo2.style.height = "auto"; // Mantiene l'aspetto proporzionale
-logo1.style.margin = "20px"; // Aggiunge un margine all'immagine di sinistra
-logo2.style.margin = "20px"; // Aggiunge un margine all'immagine di destra
-logo1.style.border = "2px solid rgb(255, 14, 14)"; // Aggiunge un bordo all'immagine di sinistra
-logo2.style.border = "2px solid rgba(0, 255, 213, 0.94)"; // Aggiunge un bordo all'immagine di destra
-logo1.style.borderRadius = "10px"; // Aggiunge un bordo arrotondato all'immagine di sinistra
-logo2.style.borderRadius = "10px"; // Aggiunge un bordo arrotondato all'immagine di destra
-logo1.style.boxShadow = "5px 5px 15px rgb(166, 255, 0)"; // Aggiunge un'ombra all'immagine di sinistra
-logo2.style.boxShadow = "5px 5px 15px rgba(0, 174, 255, 0.43)"; // Aggiunge un'ombra all'immagine di destra
-logo1.style.transition = "transform 0.3s"; // Aggiunge una transizione all'immagine di sinistra
-logo2.style.transition = "transform 0.3s"; // Aggiunge una transizione all'immagine di destra
+logo1.style.order = 1;
+logo2.style.order = 2;
+
+// Cambia le dimensioni dell'immagine 1
+logo1.style.width = "300px"; 
+logo1.style.height = "auto";
+
+// Cambia le dimensioni dell'immagine 2
+logo2.style.width = "150px";
+logo2.style.height = "auto";
+
+// Aggiunge un margine all'immagini
+logo1.style.margin = "0px"; 
+logo2.style.margin = "0px";
+
+ // Aggiunge un bordo all'immagini
+logo1.style.border = "0px solid rgba(255, 255, 255, 0)";
+logo2.style.border = "0px solid rgba(255, 255, 255, 0))";
+logo1.style.borderRadius = "0px";
+logo2.style.borderRadius = "0px";
+
+// Aggiunge un'ombra all'immagini
+logo1.style.boxShadow = "0px 0px 0px rgba(255, 255, 255, 0)"; 
+logo2.style.boxShadow = "0px 0px 0px rgba(255, 255, 255, 0)";
 
 // Modifica la dimensione delle immagini nella subheader
 logo3.style.width = "200px"; // Cambia la larghezza dell'immagine
 logo3.style.height = "auto"; // Mantiene l'aspetto proporzionale
-logo3.style.opacity = "0.5"; // Imposta l'opacità al 50%
 
 // Modifica lo stile del paragrafo principale
-mainParagraph.style.color = "rgba(0, 30, 94, 0.77)"; // Cambia il colore del testo
-mainParagraph.style.fontSize = "20pt"; // Cambia la dimensione del testo
+mainParagraph.style.color = "rgb(0, 0, 0)";
+mainParagraph.style.fontSize = "20pt";
 
 // Modifica lo stile della tabella
-table.style.backgroundColor = "rgba(37, 139, 255, 0.41)"; // Cambia il colore di sfondo della tabella
+table.style.backgroundColor = "rgb(255, 255, 255)";
 
 // Modifica lo stile delle celle della tabella
 const tableCells = document.querySelectorAll("table th, table td");
 tableCells.forEach(cell => {
-    cell.style.border = "2px solid rgb(86, 211, 149)"; // Cambia lo spessore del bordo
+    cell.style.border = "1px solid rgb(0, 0, 0)"; // Cambia lo spessore del bordo
     cell.style.padding = "15px"; // Cambia il padding delle celle
-    cell.style.backgroundColor = "rgb(77, 211, 0)"; // Cambia il colore di sfondo delle celle
-    cell.style.color = "rgb(255, 53, 131)"; // Cambia il colore del testo delle celle
+    cell.style.backgroundColor = "rgb(255, 255, 255)"; // Cambia il colore di sfondo delle celle
+    cell.style.color = "rgb(0, 0, 0)"; // Cambia il colore del testo delle celle
 });
 
 // Modifica lo stile del footer
-footer.style.backgroundColor = "rgb(68, 44, 44)"; // Cambia il colore di sfondo del footer
-footer.style.padding = "20px"; // Cambia il padding del footer
+footer.style.backgroundColor = "rgb(255, 255, 255)"; // Cambia il colore di sfondo del footer
+footer.style.padding = "10px"; // Cambia il padding del footer
 
-info.style.border = "1px solid rgb(0, 119, 255)"; // Aggiunge un bordo alla sezione info
-info.style.color = "rgb(0, 255, 85)"; // Cambia il colore del testo della sezione info
+info.style.border = "0px solid rgba(255, 255, 255, 0)"; // Aggiunge un bordo alla sezione info
+info.style.color = "rgb(0, 0, 0)"; // Cambia il colore del testo della sezione info
 info.style.padding = "10px"; // Cambia il padding della sezione info
 
 // Modifica il testo e lo stile dei paragrafi nella sezione footer
 const footerParagraphs = document.querySelectorAll(".footer .firma p");
 footerParagraphs.forEach(paragraph => {
-    paragraph.style.fontStyle = "italic"; // Cambia lo stile del testo in corsivo
-    paragraph.style.color = "rgba(0, 255, 170, 0.4)"; // Cambia il colore del testo
+    paragraph.style.fontStyle = "arial"; // Cambia lo stile del testo in corsivo
+    paragraph.style.color = "rgb(0, 0, 0)"; // Cambia il colore del testo
 });
 
 
@@ -157,6 +164,6 @@ footerParagraphs.forEach(paragraph => {
 // Modifica lo stile delle firme nel footer
 const firmaDivs = document.querySelectorAll(".firma div");
 firmaDivs.forEach(div => {
-    div.style.border = "1px solid rgba(207, 155, 255, 0.97)"; // Aggiunge un bordo alle sezioni delle firme
-    div.style.padding = "10px"; // Cambia il padding delle sezioni delle firme
+    div.style.border = "0px solid rgba(255, 255, 255, 0)"; // Aggiunge un bordo alle sezioni delle firme
+    div.style.padding = "0px"; // Cambia il padding delle sezioni delle firme
 });
