@@ -1,3 +1,7 @@
+<html lang="it">
+<head>
+        <title>Visualizza Form</title>
+</head>
 <?php
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name = $_POST["name"];
@@ -24,3 +28,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     echo "<p>Nessun dato ricevuto.</p>";
 }
 ?>
+</html>
