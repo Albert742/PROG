@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Form</title>
+</head>
+<body>
+
+    <h1>Esempio di Form</h1>
+
+    <form action="process.php" method="post">
+        <label for="name">Nome:</label><br>
+        <input type="text" id="name" name="name"><br><br>
+
+        <label>Scegli i tuoi interessi:</label><br>
+        <input type="checkbox" id="interest1" name="interests[]" value="coding">
+        <label for="interest1">Programmazione</label><br>
+
+        <input type="checkbox" id="interest2" name="interests[]" value="design">
+        <label for="interest2">Design</label><br>
+
+        <input type="checkbox" id="interest3" name="interests[]" value="music">
+        <label for="interest3">Musica</label><br><br>
+
+        <input type="submit" value="Invia">
+        <input type="reset" value="Reset">
+    </form>
+
+</body>
+</html>

@@ -36,6 +36,9 @@
 		},
 		{
 			"path": "MariaDB"
+		},
+		{
+			"path": "PHP"
 		}
 	],
 	"settings": {
