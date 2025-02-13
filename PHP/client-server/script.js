@@ -1,14 +1,14 @@
-function showSection(sectionId) {
-    hideAllSections();
+function mostraSezione(sectionId) {
+    nascondiTutteLeSezioni();
     document.getElementById(sectionId).style.display = 'block';
-    if (sectionId === 'viewProducts') {
-        viewProducts();
-    } else if (sectionId === 'calculateTotal') {
-        calculateTotal();
+    if (sectionId === 'visualizzaProdotti') {
+        visualizzaProdotti();
+    } else if (sectionId === 'calcolaTotale') {
+        calcolaTotale();
     }
 }
 
-function hideAllSections() {
+function nascondiTutteLeSezioni() {
     const sections = document.querySelectorAll('.form-section');
     sections.forEach(section => {
         section.style.display = 'none';
@@ -18,32 +18,32 @@ function hideAllSections() {
     document.getElementById('success').innerText = '';
 }
 
-function viewProducts() {
+function visualizzaProdotti() {
     fetch('server.php?action=view')
         .then(response => response.text())
         .then(data => {
-            document.getElementById('viewProductsResult').innerHTML = data;
+            document.getElementById('visualizzaProdottiResult').innerHTML = data;
         });
 }
 
-function calculateTotal() {
+function calcolaTotale() {
     fetch('server.php?action=calculate')
         .then(response => response.text())
         .then(data => {
-            document.getElementById('calculateTotalResult').innerHTML = data;
+            document.getElementById('calcolaTotaleResult').innerHTML = data;
         });
 }
 
-function insertProduct() {
+function inserisciProdotto() {
     const form = document.getElementById('productForm');
     const formData = new FormData(form);
     const productName = document.getElementById('productName').value.trim();
     const quantity = document.getElementById('quantity').value.trim();
-    const perishableYes = document.getElementById('perishableYes').checked;
-    const perishableNo = document.getElementById('perishableNo').checked;
+    const deperibileSi = document.getElementById('deperibileSi').checked;
+    const deperibileNo = document.getElementById('deperibileNo').checked;
 
-    if (!productName || !quantity || (!perishableYes && !perishableNo)) {
-        document.getElementById('error').innerText = 'Tutti i campi sono obbligatori.';
+    if (!productName || !quantity || (!deperibileSi && !deperibileNo)) {
+        document.getElementById('error').innerText = 'Tutti i campi deve essere riempiti.';
         return;
     }
 
@@ -77,12 +77,12 @@ document.getElementById('quantity').addEventListener('input', function() {
     document.getElementById('success').innerText = '';
 });
 
-document.getElementById('perishableYes').addEventListener('change', function() {
+document.getElementById('deperibileSi').addEventListener('change', function() {
     document.getElementById('error').innerText = '';
     document.getElementById('success').innerText = '';
 });
 
-document.getElementById('perishableNo').addEventListener('change', function() {
+document.getElementById('deperibileNo').addEventListener('change', function() {
     document.getElementById('error').innerText = '';
     document.getElementById('success').innerText = '';
 });
