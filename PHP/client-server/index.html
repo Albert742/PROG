@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client-Server System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .form-section {
+            display: none;
+            margin-top: 20px;
+        }
+        .result {
+            margin-top: 20px;
+        }
+        #error, #success {
+            margin-top: 10px;
+        }
+        #error {
+            color: red;
+        }
+        #success {
+            color: green;
+        }
+        input[type="text"], input[type="number"] {
+            margin-bottom: 10px;
+        }
+        button {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Gestione Magazzino</h1>
+    <button onclick="showSection('viewProducts')">Vedi tutti i prodotti</button>
+    <button onclick="showSection('calculateTotal')">Calcola quantità totale</button>
+    <button onclick="showSection('insertForm')">Inserisci nuovo prodotto</button>
+
+    <div id="viewProducts" class="form-section">
+        <h2>Prodotti in Magazzino</h2>
+        <div id="viewProductsResult" class="result"></div>
+    </div>
+
+    <div id="calculateTotal" class="form-section">
+        <h2>Quantità Totale</h2>
+        <div id="calculateTotalResult" class="result"></div>
+    </div>
+
+    <div id="insertForm" class="form-section">
+        <h2>Inserisci nuovo prodotto</h2>
+        <form id="productForm">
+            <label for="productName">Nome Prodotto:</label>
+            <input type="text" id="productName" name="productName" required><br>
+            <label for="quantity">Quantità:</label>
+            <input type="number" id="quantity" name="quantity" required><br>
+            <label>Deteriorabile:</label>
+            <input type="radio" id="perishableYes" name="perishable" value="Si" required> Si
+            <input type="radio" id="perishableNo" name="perishable" value="No" required> No<br>
+            <button type="button" onclick="insertProduct()">Inserisci</button>
+            <button type="reset">Reset</button>
+        </form>
+        <div id="error"></div>
+        <div id="success"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
