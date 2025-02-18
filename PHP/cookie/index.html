@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookie</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input[type="text"], input[type="email"], input[type="password"] {
+            width: 35%;
+            padding: 8px;
+            margin-top: 5px;
+        }
+        input[type="submit"] {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        input[id="login"] {
+            padding: 10px 20px;
+            background-color: #008CBA;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        input[id="login"]:hover {
+            background-color: #007a9b;
+        }
+        #login-section {
+            display: none;
+        }
+    </style>
+    <script>
+        function toggleLoginSection() {
+            var loginSection = document.getElementById('login-section');
+            var registrationSection = document.getElementById('registration-section');
+            loginSection.style.display = 'block';
+            registrationSection.style.display = 'none';
+        }
+
+        function toggleRegistrationSection() {
+            var loginSection = document.getElementById('login-section');
+            var registrationSection = document.getElementById('registration-section');
+            loginSection.style.display = 'none';
+            registrationSection.style.display = 'block';
+        }
+    </script>
+</head>
+<body>
+    <div id="registration-section">
+        <h2>Registrazione Utente</h2>
+        <form action="server.php?action=register" method="post">
+            <label for="name">Nome:</label>
+            <input type="text" id="name" name="name" required><br><br>
+            <label for="surname">Cognome:</label>
+            <input type="text" id="surname" name="surname" required><br><br>
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required><br><br>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required><br><br>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required><br><br>
+            <input type="submit" value="Registrati">
+        </form>
+        <p>Già registrato?</p>
+        <button id="login" onclick="toggleLoginSection()">Login</button>
+    </div>
+
+    <div id="login-section">
+        <h2>Login Utente</h2>
+        <form action="server.php?action=login" method="post">
+            <label for="login_username">Username:</label>
+            <input type="text" id="login_username" name="username" required><br><br>
+            <label for="login_password">Password:</label>
+            <input type="password" id="login_password" name="password" required><br><br>
+            <input type="submit" value="Login">
+        </form>
+        <p>Non registrato?</p>
+        <button id="register" onclick="toggleRegistrationSection()">Registrati</button>
+    </div>
+</body>
+</html>

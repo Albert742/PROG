@@ -1,0 +1,3 @@
+{"username":"AB","name":"A","surname":"B","email":"A@B.v","password":"$2y$12$eSDLA\/mLsCH\/.gHGJrx4uOcR4yLoMcnWlflCefyLNztP48NJn40Qq"}
+{"username":"CD","name":"C","surname":"D","email":"c@d.g","password":"$2y$12$NADkwhq1HMrlNFn4uTG\/1eetwcB82BdV1mblyPZsztCqbNRV0oWRW"}
+{"username":"AlPi","name":"Alberto","surname":"P","email":"AA@PP.KK","password":"$2y$12$NoSjSrhi0cli3dtd0CW0WehFGf3RjKDkigmj1RaR6r8CPhtD6B2\/q"}
