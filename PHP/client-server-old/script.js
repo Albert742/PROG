@@ -51,49 +51,20 @@ function inserisciProdotto() {
         method: 'POST',
         body: formData
     })
-    .then(response => response.text())
+    .then(response => response.json())
     .then(data => {
-        if (data.startsWith('Errore:')) {
-            document.getElementById('error').innerText = data;
-            if (data.includes('Nome prodotto già esistente.')) {
+        if (data.error) {
+            const errorMessage = data.field === 'name' ? 'Nome prodotto già esistente.' : 'ID prodotto già esistente.';
+            document.getElementById('error').innerText = errorMessage;
+            if (data.field === 'name') {
                 document.getElementById('productName').style.borderColor = 'red';
             }
         } else {
-            document.getElementById('success').innerText = data;
+            document.getElementById('success').innerText = 'Prodotto inserito con successo.';
             form.reset();
         }
     });
 }
-
-function rimuoviProdotto() {
-    const form = document.getElementById('removeProductForm');
-    const formData = new FormData(form);
-    const removeProductName = document.getElementById('removeProductName').value.trim();
-
-    if (!removeProductName) {
-        document.getElementById('removeError').innerText = 'Il nome del prodotto deve essere riempito.';
-        return;
-    }
-
-    fetch('server.php?action=remove', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.text())
-    .then(data => {
-        if (data.startsWith('Errore:')) {
-            document.getElementById('removeError').innerText = data;
-        } else {
-            document.getElementById('removeSuccess').innerText = data;
-            form.reset();
-        }
-    });
-}
-
-document.getElementById('removeProductName').addEventListener('input', function() {
-    document.getElementById('removeError').innerText = '';
-    document.getElementById('removeSuccess').innerText = '';
-});
 
 document.getElementById('productName').addEventListener('input', function() {
     document.getElementById('productName').style.borderColor = '';

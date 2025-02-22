@@ -1,3 +1,4 @@
-67ade51194127:Pasta:63:Si
-67ade52397c44:Passata:43:Si
-67ade5398ad84:Sacchetti:10:No
+67ade51194127|Pasta|63|Si
+67ade52397c44|Passata|43|Si
+67ade5398ad84|Sacchetti|10|No
+67ade5ec666c3|Pollo|6|Si
