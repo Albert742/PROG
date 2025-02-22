@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client-Server</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .form-section {
+            display: none;
+            margin-top: 20px;
+        }
+        .result {
+            margin-top: 20px;
+        }
+        #error, #success, #removeError, #removeSuccess {
+            margin-top: 10px;
+        }
+        #error, #removeError {
+            color: red;
+        }
+        #success, #removeSuccess {
+            color: green;
+        }
+        input[type="text"], input[type="number"] {
+            margin-bottom: 10px;
+        }
+        button {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Gestione Magazzino</h1>
+    <button onclick="mostraSezione('visualizzaProdotti')">Vedi tutti i prodotti</button>
+    <button onclick="mostraSezione('calcolaTotale')">Calcola quantità totale</button>
+    <button onclick="mostraSezione('inserisciProdotto')">Inserisci nuovo prodotto</button>
+    <button onclick="mostraSezione('rimuoviProdotto')">Rimuovi prodotto</button>
+
+    <div id="visualizzaProdotti" class="form-section">
+        <h2>Prodotti in Magazzino</h2>
+        <div id="visualizzaProdottiResult" class="result"></div>
+    </div>
+
+    <div id="calcolaTotale" class="form-section">
+        <h2>Quantità Totale</h2>
+        <div id="calcolaTotaleResult" class="result"></div>
+    </div>
+
+    <div id="inserisciProdotto" class="form-section">
+        <h2>Inserisci nuovo prodotto</h2>
+        <form id="productForm">
+            <label for="productName">Nome Prodotto:</label>
+            <input type="text" id="productName" name="productName" required><br>
+            <label for="quantity">Quantità:</label>
+            <input type="number" id="quantity" name="quantity" required><br>
+            <label>Deperibile:</label>
+            <input type="radio" id="deperibileSi" name="deperibile" value="Si" required> Si
+            <input type="radio" id="deperibileNo" name="deperibile" value="No" required> No<br>
+            <button type="button" onclick="inserisciProdotto()">Inserisci</button>
+            <button type="reset">Reset</button>
+        </form>
+        <div id="error"></div>
+        <div id="success"></div>
+    </div>
+
+    <div id="rimuoviProdotto" class="form-section">
+        <h2>Rimuovi prodotto</h2>
+        <form id="removeProductForm">
+            <label for="removeProductName">Nome Prodotto:</label>
+            <input type="text" id="removeProductName" name="removeProductName" required><br>
+            <button type="button" onclick="rimuoviProdotto()">Rimuovi</button>
+            <button type="reset">Reset</button>
+        </form>
+        <div id="removeError"></div>
+        <div id="removeSuccess"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
