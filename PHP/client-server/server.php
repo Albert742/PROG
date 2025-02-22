@@ -11,14 +11,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && $_GET['action'] === 'insert') {
     inserisciProdotto();
+} elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && $_GET['action'] === 'remove') {
+    rimuoviProdotto();
 }
-
 function visualizzaProdotti() {
     global $filename;
     $products = leggiProdottiDaFile($filename);
     foreach ($products as $product) {
-        list($id, $name, $quantity, $deperibile) = $product;
-        echo "Nome: $name, Quantità: $quantity, Deperibile: $deperibile<br>";
+        if (count($product) === 4) {
+            list($id, $name, $quantity, $deperibile) = $product;
+            echo "Nome: $name , Quantità: $quantity , Deperibile: $deperibile<br>";
+        }
     }
 }
 
@@ -27,8 +30,10 @@ function calcolaTotale() {
     $products = leggiProdottiDaFile($filename);
     $total = 0;
     foreach ($products as $product) {
-        list($id, $name, $quantity, $deperibile) = $product;
-        $total += (int)$quantity;
+        if (count($product) === 4) {
+            list($id, $name, $quantity, $deperibile) = $product;
+            $total += (int)$quantity;
+        }
     }
     echo "Quantità totale in magazzino: $total";
 }
@@ -44,7 +49,7 @@ function inserisciProdotto() {
     foreach ($products as $product) {
         list($existingId, $existingName) = $product;
         if ($existingId === $id || $existingName === $name) {
-            echo json_encode(['error' => 'duplicate', 'field' => $existingId === $id ? 'id' : 'name']);
+            echo "Errore: " . ($existingId === $id ? "ID prodotto già esistente." : "Nome prodotto già esistente.");
             return;
         }
     }
@@ -52,7 +57,7 @@ function inserisciProdotto() {
     $newProduct = [$id, $name, $quantity, $deperibile];
     $products[] = $newProduct;
     scriviProdottiSuFile($filename, $products);
-    echo json_encode(['success' => true]);
+    echo "Prodotto inserito con successo.";
 }
 
 function leggiProdottiDaFile($filename) {
@@ -60,7 +65,7 @@ function leggiProdottiDaFile($filename) {
     if (file_exists($filename)) {
         $file = fopen($filename, 'r');
         while (($line = fgets($file)) !== false) {
-            $products[] = explode('|', trim($line));
+            $products[] = explode(':', trim($line));
         }
         fclose($file);
     }
@@ -70,8 +75,31 @@ function leggiProdottiDaFile($filename) {
 function scriviProdottiSuFile($filename, $products) {
     $file = fopen($filename, 'w');
     foreach ($products as $product) {
-        fputcsv($file, $product, '|');
+        $linea = implode(':', $product) . PHP_EOL;
+        fwrite($file, $linea);
     }
     fclose($file);
+}
+
+function rimuoviProdotto() {
+    global $filename;
+    $name = $_POST['removeProductName'];
+
+    $products = leggiProdottiDaFile($filename);
+    $productFound = false;
+    foreach ($products as $index => $product) {
+        if ($product[1] === $name) {
+            $productFound = true;
+            unset($products[$index]);
+            break;
+        }
+    }
+
+    if ($productFound) {
+        scriviProdottiSuFile($filename, $products);
+        echo "Prodotto rimosso con successo.";
+    } else {
+        echo "Errore: Nome prodotto non trovato.";
+    }
 }
 ?>

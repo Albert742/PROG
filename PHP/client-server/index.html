@@ -15,13 +15,13 @@
         .result {
             margin-top: 20px;
         }
-        #error, #success {
+        #error, #success, #removeError, #removeSuccess {
             margin-top: 10px;
         }
-        #error {
+        #error, #removeError {
             color: red;
         }
-        #success {
+        #success, #removeSuccess {
             color: green;
         }
         input[type="text"], input[type="number"] {
@@ -37,6 +37,7 @@
     <button onclick="mostraSezione('visualizzaProdotti')">Vedi tutti i prodotti</button>
     <button onclick="mostraSezione('calcolaTotale')">Calcola quantità totale</button>
     <button onclick="mostraSezione('inserisciProdotto')">Inserisci nuovo prodotto</button>
+    <button onclick="mostraSezione('rimuoviProdotto')">Rimuovi prodotto</button>
 
     <div id="visualizzaProdotti" class="form-section">
         <h2>Prodotti in Magazzino</h2>
@@ -63,6 +64,18 @@
         </form>
         <div id="error"></div>
         <div id="success"></div>
+    </div>
+
+    <div id="rimuoviProdotto" class="form-section">
+        <h2>Rimuovi prodotto</h2>
+        <form id="removeProductForm">
+            <label for="removeProductName">Nome Prodotto:</label>
+            <input type="text" id="removeProductName" name="removeProductName" required><br>
+            <button type="button" onclick="rimuoviProdotto()">Rimuovi</button>
+            <button type="reset">Reset</button>
+        </form>
+        <div id="removeError"></div>
+        <div id="removeSuccess"></div>
     </div>
 
     <script src="script.js"></script>
